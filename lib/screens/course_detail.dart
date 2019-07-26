@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/providers/provider.dart';
+import 'package:welearn/screens/lessonpage.dart';
+import 'package:welearn/screens/unit_lessons.dart';
 import 'package:welearn/styles/styles.dart';
 
 class CourseDetail extends StatelessWidget {
@@ -137,9 +139,39 @@ class CourseDetail extends StatelessWidget {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  expanded: Text(
-                                    ds.data["description"],
-                                    softWrap: true,
+                                  expanded: GestureDetector(
+                                    onTap: (){
+                                      Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        LessonsPage()));
+                                    },
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(
+                                          ds.data["description"],
+                                          softWrap: true,
+                                          style: TextStyle(fontFamily: 'hero'),
+                                        ),
+                                        FlatButton(
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        LessonsPage()));
+                                          },
+                                          child: Text(
+                                            "Entrar",
+                                            style: TextStyle(
+                                                fontFamily: 'hero',
+                                                color: primary,
+                                                fontWeight: FontWeight.w700),
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ),
                                   tapHeaderToExpand: true,
                                   hasIcon: true,
@@ -150,7 +182,7 @@ class CourseDetail extends StatelessWidget {
                   ],
                 ),
                 floatingActionButton: Padding(
-                  padding: const EdgeInsets.symmetric(vertical:35),
+                  padding: const EdgeInsets.symmetric(vertical: 35),
                   child: FloatingActionButton.extended(
                     materialTapTargetSize: MaterialTapTargetSize.padded,
                     shape: StadiumBorder(),
@@ -158,7 +190,9 @@ class CourseDetail extends StatelessWidget {
                     backgroundColor: primary,
                     elevation: 1,
                     icon: Icon(FontAwesomeIcons.dollarSign),
-                    label: Text(ds.data["price"]!= "FREE" ? ds.data["price"]+'MXN' : ds.data["price"]),
+                    label: Text(ds.data["price"] != "FREE"
+                        ? ds.data["price"] + 'MXN'
+                        : ds.data["price"]),
                   ),
                 ),
               )
