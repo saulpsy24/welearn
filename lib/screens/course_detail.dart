@@ -95,6 +95,7 @@ class CourseDetail extends StatelessWidget {
                     Container(
                       height: MediaQuery.of(context).size.height*.40,
                       child: ListView(
+                      
                         itemExtent: 100,
                         children: <Widget>[
                           for(int i=1;i<9;i++)
