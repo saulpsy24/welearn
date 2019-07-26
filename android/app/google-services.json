@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "578143376334",
+    "firebase_url": "https://welearn-4b24d.firebaseio.com",
+    "project_id": "welearn-4b24d",
+    "storage_bucket": "welearn-4b24d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:578143376334:android:ab3282f5dd1017f7",
+        "android_client_info": {
+          "package_name": "com.disolutionsmx.welearn"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "578143376334-nnr42nlr98dgp56qo1v37dmipmr3m6ia.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDjxYaiVeIGwD3VNOcL5ljKPlF-nO-9PgQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "578143376334-nnr42nlr98dgp56qo1v37dmipmr3m6ia.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "578143376334-gh8vj7u0go912vp0pqkpdad0qdr1brq9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.disolutionsmx.welearn"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
