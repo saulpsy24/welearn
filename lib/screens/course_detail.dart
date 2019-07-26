@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/providers/provider.dart';
+import 'package:welearn/styles/styles.dart';
 
 class CourseDetail extends StatelessWidget {
   @override
@@ -18,12 +20,13 @@ class CourseDetail extends StatelessWidget {
         return ds.hasData
             ? Scaffold(
                 appBar: AppBar(
+                  brightness: Brightness.light,
                   backgroundColor: Colors.transparent,
                   elevation: 0,
                   iconTheme: IconThemeData(color: Colors.black),
                   title: Text(
-                    ds.hasData ? ds.data["name"] : "Cargando..",
-                    style: TextStyle(color: Colors.black),
+                    ds.data["name"],
+                    style: TextStyle(color: Colors.black, fontFamily: 'hero'),
                   ),
                 ),
                 body: Column(
@@ -63,6 +66,7 @@ class CourseDetail extends StatelessWidget {
                           ),
                           Container(
                             height: MediaQuery.of(context).size.height * .25,
+                            padding: EdgeInsets.only(bottom: 10),
                             decoration: BoxDecoration(
                               color: Colors.transparent,
                               borderRadius: BorderRadius.only(
@@ -88,28 +92,74 @@ class CourseDetail extends StatelessWidget {
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * .95,
+                      height: MediaQuery.of(context).size.height * .18,
                       padding: EdgeInsets.all(
                           MediaQuery.of(context).size.width * .04),
-                      child: Center(child: Text(ds.data["description"])),
+                      child: Center(
+                          child: Text(
+                        ds.data["description"],
+                        style: TextStyle(
+                            fontFamily: 'hero', fontWeight: FontWeight.w600),
+                      )),
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height*.40,
+                      height: MediaQuery.of(context).size.height * .40,
                       child: ListView(
-                      
-                        itemExtent: 100,
                         children: <Widget>[
-                          for(int i=1;i<9;i++)
-                          ExpansionTile(
-                            title: Text("Unidad $i"),
-                            leading: Icon(FontAwesomeIcons.university),
-                            children: <Widget>[
-                              Text("Descripcion de la unidad")
-                            ],
-                          )
+                          for (int i = 1; i < 9; i++)
+                            Container(
+                                decoration: BoxDecoration(
+                                    boxShadow: [
+                                      BoxShadow(
+                                          blurRadius: 2, color: Colors.black45)
+                                    ],
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(10)),
+                                margin: EdgeInsets.all(10),
+                                padding: EdgeInsets.all(6),
+                                child: ExpandablePanel(
+                                  header: Center(
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: <Widget>[
+                                        Icon(
+                                          FontAwesomeIcons.school,
+                                          size: 19,
+                                        ),
+                                        Text("   Unidad $i"),
+                                      ],
+                                    ),
+                                  ),
+                                  collapsed: Text(
+                                    ds.data["description"],
+                                    softWrap: true,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                  expanded: Text(
+                                    ds.data["description"],
+                                    softWrap: true,
+                                  ),
+                                  tapHeaderToExpand: true,
+                                  hasIcon: true,
+                                ))
                         ],
                       ),
                     )
                   ],
+                ),
+                floatingActionButton: Padding(
+                  padding: const EdgeInsets.symmetric(vertical:35),
+                  child: FloatingActionButton.extended(
+                    materialTapTargetSize: MaterialTapTargetSize.padded,
+                    shape: StadiumBorder(),
+                    onPressed: () {},
+                    backgroundColor: primary,
+                    elevation: 1,
+                    icon: Icon(FontAwesomeIcons.dollarSign),
+                    label: Text(ds.data["price"]!= "FREE" ? ds.data["price"]+'MXN' : ds.data["price"]),
+                  ),
                 ),
               )
             : Scaffold(
