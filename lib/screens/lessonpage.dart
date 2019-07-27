@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 
-import 'package:flutube/flutube.dart';
-
 class LessonPage extends StatefulWidget {
   @override
   _LessonPageState createState() => _LessonPageState();
@@ -47,28 +45,7 @@ class _LessonPageState extends State<LessonPage> {
               child: Container(
                 
                 color: Colors.black,
-                child: FluTube(
-                  "https://youtu.be/al4DSgjB3oU",
-                  autoInitialize: true,
-                  aspectRatio: 16 / 9,
-                  allowMuting: false,
-                  autoPlay: true,
-                  allowFullScreen: true,
-                  fullscreenByDefault: false,
-                  deviceOrientationAfterFullscreen: [
-                    DeviceOrientation.landscapeLeft,
-                    DeviceOrientation.landscapeRight,
-                    DeviceOrientation.portraitUp
-                  ],
-                  onVideoStart: () {},
-                  systemOverlaysAfterFullscreen: SystemUiOverlay.values,
-                  onVideoEnd: () {
-                    print("aqui");
-                    setState(() {
-                      currentPos++;
-                    });
-                  },
-                ),
+                child: Text('Aqui Va el Video')
               ),
             ),
             Container(

@@ -37,7 +37,7 @@ packages:
     source: hosted
     version: "1.1.2"
   chewie:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: chewie
       url: "https://pub.dartlang.org"
@@ -85,13 +85,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.1.2"
-  curved_navigation_bar:
-    dependency: "direct main"
-    description:
-      name: curved_navigation_bar
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.3.0"
   datetime_picker_formfield:
     dependency: transitive
     description:
@@ -186,13 +179,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.2+1"
-  flutube:
-    dependency: "direct main"
-    description:
-      name: flutube
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.8.1"
   font_awesome_flutter:
     dependency: "direct main"
     description:
