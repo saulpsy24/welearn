@@ -115,6 +115,7 @@ class LoginPage extends StatelessWidget {
                                                 .currentState.value['password'])
                                         .then((user) {
                                       final page = RootPage();
+                                      mainProvider.page=0;
 
                                       //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>page));
                                       mainProvider.currentUser = user;
@@ -185,10 +186,12 @@ class LoginPage extends StatelessWidget {
 
     return StatefulWrapper(
       onInit: () {
+        
         FirebaseAuth.instance.currentUser().then((user) {
           mainProvider.currentUser = user;
           if (mainProvider.currentUser != null) {
             final page = RootPage();
+            mainProvider.page=0;
             Navigator.pushReplacement(
                 context, MaterialPageRoute(builder: (context) => page));
           }

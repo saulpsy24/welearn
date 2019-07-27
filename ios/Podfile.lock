@@ -66,6 +66,9 @@ PODS:
     - GoogleUtilities/Environment (~> 6.0)
     - GoogleUtilities/UserDefaults (~> 6.0)
   - Flutter (1.0.0)
+  - FMDB (2.7.5):
+    - FMDB/standard (= 2.7.5)
+  - FMDB/standard (2.7.5)
   - GoogleAppMeasurement (6.0.2):
     - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
     - GoogleUtilities/MethodSwizzler (~> 6.0)
@@ -116,11 +119,20 @@ PODS:
     - nanopb/encode (= 0.3.901)
   - nanopb/decode (0.3.901)
   - nanopb/encode (0.3.901)
+  - path_provider (0.0.1):
+    - Flutter
   - Protobuf (3.8.0)
   - Reachability (3.2)
   - screen (0.0.1):
     - Flutter
+  - sqflite (0.0.1):
+    - Flutter
+    - FMDB (~> 2.7.2)
+  - url_launcher (0.0.1):
+    - Flutter
   - video_player (0.0.1):
+    - Flutter
+  - webview_flutter (0.0.1):
     - Flutter
 
 DEPENDENCIES:
@@ -129,8 +141,12 @@ DEPENDENCIES:
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `.symlinks/flutter/ios`)
   - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
+  - path_provider (from `.symlinks/plugins/path_provider/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
+  - sqflite (from `.symlinks/plugins/sqflite/ios`)
+  - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
   - video_player (from `.symlinks/plugins/video_player/ios`)
+  - webview_flutter (from `.symlinks/plugins/webview_flutter/ios`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -142,6 +158,7 @@ SPEC REPOS:
     - FirebaseCore
     - FirebaseFirestore
     - FirebaseInstanceID
+    - FMDB
     - GoogleAppMeasurement
     - GoogleUtilities
     - "gRPC-C++"
@@ -163,10 +180,18 @@ EXTERNAL SOURCES:
     :path: ".symlinks/flutter/ios"
   keyboard_visibility:
     :path: ".symlinks/plugins/keyboard_visibility/ios"
+  path_provider:
+    :path: ".symlinks/plugins/path_provider/ios"
   screen:
     :path: ".symlinks/plugins/screen/ios"
+  sqflite:
+    :path: ".symlinks/plugins/sqflite/ios"
+  url_launcher:
+    :path: ".symlinks/plugins/url_launcher/ios"
   video_player:
     :path: ".symlinks/plugins/video_player/ios"
+  webview_flutter:
+    :path: ".symlinks/plugins/webview_flutter/ios"
 
 SPEC CHECKSUMS:
   BoringSSL-GRPC: db8764df3204ccea016e1c8dd15d9a9ad63ff318
@@ -181,6 +206,7 @@ SPEC CHECKSUMS:
   FirebaseFirestore: 75768d91aad491eccdc02202b8161cff9872300e
   FirebaseInstanceID: f20243a1d828e0e9a3798b995174dedc16f1b32a
   Flutter: 58dd7d1b27887414a370fcccb9e645c08ffd7a6a
+  FMDB: 2ce00b547f966261cd18927a3ddb07cb6f3db82a
   GoogleAppMeasurement: a35a645835bae31b6bdc0576396bc23908f12a22
   GoogleUtilities: 996e0db07153674fd1b54b220fda3a3dc3547cba
   "gRPC-C++": 9dfe7b44821e7b3e44aacad2af29d2c21f7cde83
@@ -189,10 +215,14 @@ SPEC CHECKSUMS:
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
+  path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   Protobuf: 3f617b9a6e73605565086864c9bc26b2bf2dd5a3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
+  sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a
+  url_launcher: 0067ddb8f10d36786672aa0722a21717dba3a298
   video_player: 3964090a33353060ed7f58aa6427c7b4b208ec21
+  webview_flutter: 1aa7604e6cdb451a9b7ed2c37d5454c0b440246b
 
 PODFILE CHECKSUM: b6a0a141693093b304368d08511b46cf3d1d0ac5
 

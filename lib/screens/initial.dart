@@ -1,3 +1,4 @@
+import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,54 +37,77 @@ class RootPage extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        brightness: Brightness.light,
-        title: Text(
-          mainProvider.pageName,
-          style: TextStyle(
-              color: Colors.black87, fontFamily: 'hero', fontSize: 17),
+        appBar: AppBar(
+          elevation: 0,
+          brightness: Brightness.light,
+          title: Text(
+            mainProvider.pageName,
+            style: TextStyle(
+                color: Colors.black87, fontFamily: 'hero', fontSize: 17),
+          ),
+          backgroundColor: Colors.transparent,
+          actionsIconTheme: IconThemeData(color: Colors.black38),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () {},
+              icon: Icon(FontAwesomeIcons.search),
+            )
+          ],
         ),
-        backgroundColor: Colors.transparent,
-        actionsIconTheme: IconThemeData(color: Colors.black38),
-        actions: <Widget>[
-          IconButton(
-            onPressed: () {},
-            icon: Icon(FontAwesomeIcons.search),
-          )
-        ],
-      ),
-      body: _body(),
-      bottomNavigationBar: CurvedNavigationBar(
-        key: _bottomNavigationKey,
-        color: Colors.grey[400],
-        backgroundColor: Colors.transparent,
-        items: <Widget>[
-          Icon(
-            CupertinoIcons.home,
-            size: 30,
-            color: Colors.white,
-          ),
-          Icon(
-            CupertinoIcons.profile_circled,
-            size: 30,
-            color: Colors.white,
-          ),
-          Icon(
-            CupertinoIcons.mail,
-            size: 30,
-            color: Colors.white,
-          ),
-        ],
-        onTap: (index) {
-          mainProvider.page = index;
-          mainProvider.page == 1
-              ? mainProvider.pageName = "USUARIO"
-              : mainProvider.page == 2
-                  ? mainProvider.pageName = "MENSAJES"
-                  : mainProvider.pageName = "INICIO";
-        },
-      ),
-    );
+        body: _body(),
+        
+        bottomNavigationBar: BubbleBottomBar(
+          opacity: .2,
+          currentIndex: mainProvider.page,
+          onTap: (index) {
+            mainProvider.page = index;
+            mainProvider.page == 1
+                ? mainProvider.pageName = "USUARIO"
+                : mainProvider.page == 2
+                    ? mainProvider.pageName = "MENSAJES"
+                    : mainProvider.pageName = "INICIO";
+          },
+          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+          elevation: 8, //new
+          hasNotch: true, //new
+          hasInk: true, //new, gives a cute ink effect
+          inkColor:
+              Colors.black12, //optional, uses theme color if not specified
+          items: <BubbleBottomBarItem>[
+            BubbleBottomBarItem(
+                backgroundColor: Colors.red,
+                icon: Icon(
+                  Icons.dashboard,
+                  color: Colors.black,
+                ),
+                activeIcon: Icon(
+                  Icons.dashboard,
+                  color: Colors.red,
+                ),
+                title: Text("Inicio")),
+            BubbleBottomBarItem(
+                backgroundColor: Colors.deepPurple,
+                icon: Icon(
+                  Icons.people,
+                  color: Colors.black,
+                ),
+                activeIcon: Icon(
+                  Icons.people,
+                  color: Colors.deepPurple,
+                ),
+                title: Text("Mi Cuenta")),
+            BubbleBottomBarItem(
+                backgroundColor: Colors.indigo,
+                icon: Icon(
+                  Icons.folder_open,
+                  color: Colors.black,
+                ),
+                activeIcon: Icon(
+                  Icons.folder_open,
+                  color: Colors.indigo,
+                ),
+                title: Text("Archivo")),
+          ],
+        ));
   }
 }
