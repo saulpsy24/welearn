@@ -1,4 +1,5 @@
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -9,7 +10,6 @@ import 'package:welearn/screens/hometabs/tab2.dart';
 import 'package:welearn/screens/hometabs/tab3.dart';
 
 class RootPage extends StatelessWidget {
-  final GlobalKey _bottomNavigationKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     final mainProvider = Provider.of<MainProvider>(context);
@@ -48,13 +48,14 @@ class RootPage extends StatelessWidget {
           actionsIconTheme: IconThemeData(color: Colors.black38),
           actions: <Widget>[
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+              },
               icon: Icon(FontAwesomeIcons.search),
             )
           ],
         ),
         body: _body(),
-        
         bottomNavigationBar: BubbleBottomBar(
           opacity: .2,
           currentIndex: mainProvider.page,

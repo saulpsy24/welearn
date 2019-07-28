@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:welearn/components/categories.dart';
 import 'package:welearn/screens/lessonpage.dart';
 
 class LessonsPage extends StatelessWidget {
