@@ -56,6 +56,7 @@ class Tab1 extends StatelessWidget {
                   return new ListView(
                     itemExtent: MediaQuery.of(context).size.width * .55,
                     scrollDirection: Axis.horizontal,
+                    //En documents guardamos toddas las inscripciones del usuario, luego mapeamos, y jalamos en document el detalle de cada curso
                     children: snapshot.data.documents
                         .map((DocumentSnapshot document) {
                       return FutureBuilder<DocumentSnapshot>(
@@ -84,6 +85,7 @@ class Tab1 extends StatelessWidget {
                                   child: MyCourseCard(
                                     courseTitle: documents.data["name"],
                                     currentProgress: document.data["progress"],
+                                    courseImage: documents.data["image"],
                                   ),
                                 );
                             }

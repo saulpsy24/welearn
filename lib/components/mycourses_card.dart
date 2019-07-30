@@ -6,7 +6,8 @@ class MyCourseCard extends StatelessWidget {
   final String courseTitle;
   final Color color = Color.fromARGB(150, 0, 0, 0);
   final int currentProgress;
-  MyCourseCard({this.courseTitle, this.currentProgress});
+  final String courseImage;
+  MyCourseCard({this.courseTitle, this.currentProgress,this.courseImage});
   @override
   Widget build(BuildContext context) {
     final w = MediaQuery.of(context).size.width;
@@ -18,7 +19,7 @@ class MyCourseCard extends StatelessWidget {
         image: DecorationImage(
           fit: BoxFit.cover,
           alignment: Alignment.topCenter,
-          image: AssetImage('assets/patron.jpg'),
+          image: NetworkImage(courseImage),
           
         ),
       ),

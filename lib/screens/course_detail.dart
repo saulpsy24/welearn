@@ -3,7 +3,9 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:welearn/components/incluye_card.dart';
 import 'package:welearn/providers/provider.dart';
+import 'package:welearn/screens/live_class.dart';
 import 'package:welearn/screens/unit_lessons.dart';
 import 'package:welearn/styles/styles.dart';
 
@@ -39,9 +41,6 @@ class CourseDetail extends StatelessWidget {
                           Container(
                             height: MediaQuery.of(context).size.height * .25,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(10)),
                               image: DecorationImage(
                                   image: NetworkImage(
                                     ds.data["image"],
@@ -52,9 +51,6 @@ class CourseDetail extends StatelessWidget {
                           Container(
                             height: MediaQuery.of(context).size.height * .25,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(5),
-                                  bottomRight: Radius.circular(10)),
                               gradient: LinearGradient(
                                   begin: Alignment.topCenter,
                                   end: Alignment.bottomCenter,
@@ -92,89 +88,245 @@ class CourseDetail extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * .95,
-                      height: MediaQuery.of(context).size.height * .18,
-                      padding: EdgeInsets.all(
-                          MediaQuery.of(context).size.width * .04),
-                      child: Center(
-                          child: Text(
-                        ds.data["description"],
-                        style: TextStyle(
-                            fontFamily: 'hero', fontWeight: FontWeight.w600),
-                      )),
-                    ),
-                    Container(
-                      height: MediaQuery.of(context).size.height * .40,
+                      height: MediaQuery.of(context).size.height * .7,
                       child: ListView(
                         children: <Widget>[
-                          for (int i = 1; i < 9; i++)
-                            Container(
-                                decoration: BoxDecoration(
-                                    boxShadow: [
-                                      BoxShadow(
-                                          blurRadius: 2, color: Colors.black45)
-                                    ],
-                                    color: Colors.white,
-                                    borderRadius: BorderRadius.circular(10)),
-                                margin: EdgeInsets.all(10),
-                                padding: EdgeInsets.all(6),
-                                child: ExpandablePanel(
-                                  header: Center(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: <Widget>[
-                                        Icon(
-                                          FontAwesomeIcons.school,
-                                          size: 19,
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                child: Text(
+                                  ds.data["name"],
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 30,
+                                      fontFamily: 'hero',
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                child: Text(
+                                  ds.data["description"],
+                                  style: TextStyle(
+                                      color: Colors.black54,
+                                      fontSize: 14,
+                                      fontFamily: 'hero',
+                                      fontWeight: FontWeight.w400),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.only(top: 10),
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                child: Text(
+                                  "Este curso incluye",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 15,
+                                      fontFamily: 'hero',
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.symmetric(vertical: 10),
+                                height: MediaQuery.of(context).size.width * .28,
+                                child: ListView(
+                                  scrollDirection: Axis.horizontal,
+                                  children: <Widget>[
+                                    GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LiveStreamClass()));
+                                      },
+                                      child: IncludeCard(
+                                        title: 'Clases en Vivo',
+                                        icono: Icon(
+                                          Icons.table_chart,
+                                          color: primary,
                                         ),
-                                        Text("   Unidad $i"),
-                                      ],
+                                      ),
                                     ),
-                                  ),
-                                  collapsed: Text(
-                                    ds.data["description"],
-                                    softWrap: true,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  expanded: GestureDetector(
-                                    onTap: (){
-                                      Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        LessonsPage()));
-                                    },
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(
-                                          ds.data["description"],
-                                          softWrap: true,
-                                          style: TextStyle(fontFamily: 'hero'),
-                                        ),
-                                        FlatButton(
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        LessonsPage()));
-                                          },
-                                          child: Text(
-                                            "Entrar",
-                                            style: TextStyle(
-                                                fontFamily: 'hero',
-                                                color: primary,
-                                                fontWeight: FontWeight.w700),
+                                    IncludeCard(
+                                      title: 'Videos Tutoriales',
+                                      icono: Icon(
+                                        Icons.play_arrow,
+                                        color: primary,
+                                      ),
+                                    ),
+                                    IncludeCard(
+                                      title: 'Material Didáctico',
+                                      icono: Icon(
+                                        Icons.wb_iridescent,
+                                        color: primary,
+                                      ),
+                                    ),
+                                    IncludeCard(
+                                      title: 'Exámenes',
+                                      icono: Icon(
+                                        Icons.view_module,
+                                        color: primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                            child: Container(
+                              margin: EdgeInsets.all(10),
+                              width: 100,
+                              child: MaterialButton(
+                                shape: StadiumBorder(),
+                                onPressed: () {},
+                                color: primary,
+                                child: Text(
+                                  'Entrar al Curso',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontFamily: 'hero',
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
+                          StreamBuilder<QuerySnapshot>(
+                            stream: Firestore.instance
+                                .collection('course_units')
+                                .where("course_id",
+                                    isEqualTo: mainProvider.courseId)
+                                .snapshots(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<QuerySnapshot> snapshot) {
+                              if (snapshot.hasError)
+                                return new Text('Error: ${snapshot.error}');
+                              switch (snapshot.connectionState) {
+                                case ConnectionState.waiting:
+                                  return new Text('Loading...');
+                                default:
+                                  return new Column(
+                                    children: snapshot.data.documents
+                                        .map((DocumentSnapshot document) {
+                                      return Container(
+                                        margin: EdgeInsets.all(10),
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          image: DecorationImage(
+                                            fit: BoxFit.cover,
+                                            image: NetworkImage(
+                                                document.data["unit_image"]),
                                           ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                  tapHeaderToExpand: true,
-                                  hasIcon: true,
-                                ))
+                                        ),
+                                        child: new Container(
+                                            padding: EdgeInsets.all(6),
+                                            decoration: BoxDecoration(
+                                                gradient: LinearGradient(
+                                                  begin: Alignment.topCenter,
+                                                  end: Alignment.bottomCenter,
+                                                    colors: [
+                                                      Color.fromARGB(
+                                                          250, 30, 150, 156),
+                                                      Color.fromARGB(
+                                                          150, 30, 150, 156)
+                                                    ]),
+                                                borderRadius:
+                                                    BorderRadius.circular(10)),
+                                            child: Container(
+                                              child: ExpandablePanel(
+                                                header: Center(
+                                                  child: Text(
+                                                    document.data["unit_name"],
+                                                    style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontFamily: 'hero',
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 20,
+                                                    ),
+                                                  ),
+                                                ),
+                                                collapsed: Text(
+                                                  document
+                                                      .data["unit_description"],
+                                                  textAlign: TextAlign.center,
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white,
+                                                      fontFamily: 'hero'),
+                                                  softWrap: true,
+                                                  maxLines: 1,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                ),
+                                                expanded: GestureDetector(
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                LessonsPage()));
+                                                  },
+                                                  child: Column(
+                                                    children: <Widget>[
+                                                      Text(
+                                                        document.data[
+                                                            "unit_description"],
+                                                        softWrap: true,
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        style: TextStyle(
+                                                          fontFamily: 'hero',
+                                                          color: Colors.white,
+                                                          fontSize: 16,
+                                                        ),
+                                                      ),
+                                                      FlatButton(
+                                                        shape: StadiumBorder(),
+                                                        color: primary,
+                                                        onPressed: () {
+                                                          Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                  builder:
+                                                                      (context) =>
+                                                                          LessonsPage()));
+                                                        },
+                                                        child: Text(
+                                                          "Entrar",
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'hero',
+                                                              color:
+                                                                  Colors.white,
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .w700),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                                tapHeaderToExpand: true,
+                                                hasIcon: true,
+                                              ),
+                                            )),
+                                      );
+                                    }).toList(),
+                                  );
+                              }
+                            },
+                          ),
+                          Container(
+                            child: Column(
+                              children: <Widget>[],
+                            ),
+                          )
                         ],
                       ),
                     )

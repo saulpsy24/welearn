@@ -1,10 +1,12 @@
+import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart' as HTML;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:video_player/video_player.dart';
 import 'package:welearn/screens/fullscreen.dart';
+import 'package:welearn/styles/styles.dart';
 
 class LessonPage extends StatefulWidget {
   @override
@@ -18,9 +20,10 @@ class _LessonPageState extends State<LessonPage> {
   int segundos;
   int inicial;
   int inicialm = 0;
+  int index = 0;
 
   String webContent =
-      '<h1 style="text-align: center;">Titulo de la lección</h1><p style="text-align: center;"><strong>Lorem Ipsum</strong><span> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</span></p>';
+      '<h1 style="text-align: center;">Titulo de la lección</h1><img style="display:block;width:50%;height:100px" src="https://disolutionsmx.com/images/Logo.png"/><p style="text-align: center;"><strong>Lorem Ipsum</strong><span> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</span></p><h1 style="text-align: center;">Titulo de la lección</h1><p style="text-align: center;"><strong>Lorem Ipsum</strong><span> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</span></p><iframe width="560" height="315" src="https://www.youtube.com/embed/sPeGGyAfVo0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
 
   @override
   void setState(fn) {
@@ -50,6 +53,7 @@ class _LessonPageState extends State<LessonPage> {
         _controller.play();
         segundos = inicial;
         minutos = inicialm;
+        index = 0;
       });
     });
 
@@ -89,121 +93,164 @@ class _LessonPageState extends State<LessonPage> {
           style: TextStyle(color: Colors.black, fontFamily: 'hero'),
         ),
       ),
+      bottomNavigationBar: BubbleBottomBar(
+        opacity: .1,
+        currentIndex: index,
+        onTap: (indexe) {
+          setState(() {
+            index = indexe;
+          });
+        },
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+        elevation: 8, //new
+        hasNotch: true, //new
+        hasInk: true, //new, gives a cute ink effect
+        inkColor: Colors.black12, //optional, uses theme color if not specified
+        items: <BubbleBottomBarItem>[
+          BubbleBottomBarItem(
+              backgroundColor: Colors.red,
+              icon: Icon(
+                Icons.dashboard,
+                color: Colors.black,
+              ),
+              activeIcon: Icon(
+                Icons.dashboard,
+                color: Colors.red,
+              ),
+              title: Text("Lección")),
+          BubbleBottomBarItem(
+              backgroundColor: Colors.deepPurple,
+              icon: Icon(
+                Icons.question_answer,
+                color: Colors.black,
+              ),
+              activeIcon: Icon(
+                Icons.question_answer,
+                color: Colors.deepPurple,
+              ),
+              title: Text("Preguntas")),
+        ],
+      ),
       body: SafeArea(
         child: ListView(
           children: <Widget>[
             Center(
-              child: Stack(
-                children: <Widget>[
-                  Container(
-                    color: Colors.black,
-                    child: _controller.value.initialized &&
-                            _controller.value.position.inMilliseconds != 0
-                        ? AspectRatio(
+                child: Stack(
+              children: <Widget>[
+                Container(
+                  color: Colors.black,
+                  child: _controller.value.initialized &&
+                          _controller.value.position.inMilliseconds != 0
+                      ? AspectRatio(
+                          aspectRatio: 1.78,
+                          child: VideoPlayer(
+                            _controller,
+                          ),
+                        )
+                      : Container(
+                          child: AspectRatio(
                             aspectRatio: 1.78,
-                            child: VideoPlayer(
-                              _controller,
-                            ),
-                          )
-                        : Container(
-                            child: AspectRatio(
-                              aspectRatio: 1.78,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
+                            child: Center(
+                              child: CircularProgressIndicator(),
                             ),
                           ),
-                  ),
-                  Container(
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                          Color.fromARGB(0, 0, 0, 0),
-                          Color.fromARGB(5, 0, 0, 0),
-                          Color.fromARGB(15, 0, 0, 0),
-                          Color.fromARGB(180, 0, 0, 0),
-                        ])),
-                    child: AspectRatio(
-                      aspectRatio:1.78,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Row(
-                            children: <Widget>[
-                              IconButton(
-                                  onPressed: () {
-                                    setState(() {
-                                      _controller.value.isPlaying
-                                          ? _controller.pause()
-                                          : _controller.play();
-
-                                      if (_controller.value.position ==
-                                          _controller.value.duration) {
-                                        setState(() {
-                                          _controller
-                                              .seekTo(Duration(seconds: 0));
-                                          currentPos = 0;
-                                        });
-                                      }
-                                    });
-                                  },
-                                  color: Colors.white,
-                                  icon: !_controller.value.isPlaying
-                                      ? Icon(
-                                          FontAwesomeIcons.play,
-                                          size: MediaQuery.of(context)
-                                                  .devicePixelRatio *
-                                              6,
-                                        )
-                                      : miicono),
-                              Container(
-                                margin: EdgeInsets.only(right: 5),
-                                width: MediaQuery.of(context).size.width * .65,
-                                child: FAProgressBar(
-                                  size: 5,
-                                  backgroundColor: Color.fromARGB(50, 0, 0, 0),
-                                  progressColor: Colors.teal,
-                                  currentValue:
-                                      _controller.value.position != null
-                                          ? currentPos
-                                          : 0.0,
-                                  maxValue: _controller.value.duration != null
-                                      ? _controller.value.duration.inSeconds
-                                          .toInt()
-                                      : 100,
-                                ),
-                              ),
-                              Text(
-                                "$minutos:$segundos",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              IconButton(
-                                icon: Icon(Icons.fullscreen),
+                        ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                        Color.fromARGB(0, 0, 0, 0),
+                        Color.fromARGB(5, 0, 0, 0),
+                        Color.fromARGB(15, 0, 0, 0),
+                        Color.fromARGB(180, 0, 0, 0),
+                      ])),
+                  child: AspectRatio(
+                    aspectRatio: 1.78,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Row(
+                          children: <Widget>[
+                            IconButton(
                                 onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => FullScreenVideo(
-                                                videoFullscreen: _controller,
-                                                minutos: minutos,
-                                                segundos: segundos,
-                                              )));
+                                  setState(() {
+                                    _controller.value.isPlaying
+                                        ? _controller.pause()
+                                        : _controller.play();
+
+                                    if (_controller.value.position ==
+                                        _controller.value.duration) {
+                                      setState(() {
+                                        _controller
+                                            .seekTo(Duration(seconds: 0));
+                                        currentPos = 0;
+                                      });
+                                    }
+                                  });
                                 },
                                 color: Colors.white,
-                              )
-                            ],
-                          )
-                        ],
-                      ),
+                                icon: !_controller.value.isPlaying
+                                    ? Icon(
+                                        FontAwesomeIcons.play,
+                                        size: MediaQuery.of(context)
+                                                .devicePixelRatio *
+                                            6,
+                                      )
+                                    : miicono),
+                            Container(
+                              width: MediaQuery.of(context).size.width * .65,
+                              child: CupertinoSlider(
+                                activeColor: primary,
+                                onChanged: (val) {
+                                  _controller
+                                      .seekTo(Duration(seconds: val.toInt()));
+                                },
+                                onChangeEnd: (newval) {
+                                  _controller.seekTo(
+                                      Duration(seconds: newval.toInt()));
+                                },
+                                max: _controller.value.duration != null
+                                    ? _controller.value.duration.inSeconds
+                                        .toDouble()
+                                    : 100,
+                                min: 0.0,
+                                value: _controller.value.position != null
+                                    ? _controller.value.position.inSeconds
+                                        .toDouble()
+                                    : 0.0,
+                              ),
+                            ),
+                            Text(
+                              "$minutos:$segundos",
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.fullscreen),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => FullScreenVideo(
+                                              videoFullscreen: _controller,
+                                              minutos: minutos,
+                                              segundos: segundos,
+                                            )));
+                              },
+                              color: Colors.white,
+                            )
+                          ],
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
-            ),
+                  ),
+                )
+              ],
+            )),
             Container(
               height: MediaQuery.of(context).size.height * .5,
               child: ListView(
@@ -214,7 +261,7 @@ class _LessonPageState extends State<LessonPage> {
                   )
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
