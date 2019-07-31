@@ -144,6 +144,7 @@ class LessonsPage extends StatelessWidget {
                               onTap: () {
                                 mainProvider.setLessons =
                                     snapshot.data.documents;
+                                mainProvider.setLesson=document;
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

@@ -27,6 +27,7 @@ class _LessonPageState extends State<LessonPage> {
   int inicial;
   int inicialm = 0;
   int index = 0;
+  String video;
 
   String webContent;
   @override
@@ -43,17 +44,20 @@ class _LessonPageState extends State<LessonPage> {
     currentPos = 0;
     minutos = 0;
     segundos = 0;
-    _controller =
-        VideoPlayerController.network(widget.lesson.data["lesson_video"]);
+    setState(() {
+      webContent = widget.lesson.data["lesson_content"];
+
+      video = widget.lesson.data["lesson_video"];
+    });
+
+    _controller = VideoPlayerController.network(video);
     _controller.initialize().then((_) {
       inicial = _controller.value.duration.inSeconds;
       while (inicial > 60) {
         inicialm++;
         inicial = inicial - 60;
       }
-
       setState(() {
-        webContent = widget.lesson.data["lesson_content"];
         _controller.setVolume(100.0);
         _controller.play();
         segundos = inicial;
@@ -96,7 +100,7 @@ class _LessonPageState extends State<LessonPage> {
         backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          widget.lesson.data["lesson_title"],
+          mainProvider.getLesson.data["lesson_title"],
           style: TextStyle(color: Colors.black, fontFamily: 'hero'),
         ),
       ),
@@ -147,7 +151,7 @@ class _LessonPageState extends State<LessonPage> {
               decoration: BoxDecoration(
                 color: Colors.white,
                 border: Border(
-                  bottom:BorderSide(
+                  bottom: BorderSide(
                     color: Colors.black38,
                   ),
                 ),
@@ -156,37 +160,49 @@ class _LessonPageState extends State<LessonPage> {
                   scrollDirection: Axis.horizontal,
                   itemCount: mainProvider.getLessons.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return Column(
-                      children: <Widget>[
-                        Container(
-                          height: MediaQuery.of(context).size.height * .09,
-                          width: MediaQuery.of(context).size.height * .09,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(
-                                MediaQuery.of(context).size.height * .06),
-                            border: Border.all(color: primary),
-                            image: DecorationImage(
-                              fit: BoxFit.cover,
-                              alignment: Alignment.centerLeft,
-                              image: NetworkImage(mainProvider
-                                  .getLessons[index].data["lesson_image"]),
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LessonPage(
+                                      lesson: mainProvider.getLessons[index],
+                                    )));
+                        mainProvider.setLesson = mainProvider.getLessons[index];
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            height: MediaQuery.of(context).size.height * .09,
+                            width: MediaQuery.of(context).size.height * .09,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  MediaQuery.of(context).size.height * .06),
+                              border: Border.all(color: primary),
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                alignment: Alignment.centerLeft,
+                                image: NetworkImage(mainProvider
+                                    .getLessons[index].data["lesson_image"]),
+                              ),
                             ),
+                            child: Container(),
                           ),
-                          child: Container(),
-                        ),
-                        Container(
-                          width: MediaQuery.of(context).size.width * .25,
-                          child: Text(
-                            mainProvider.getLessons[index].data["lesson_title"],
-                            style:
-                                TextStyle(color: primary, fontFamily: 'hero'),
-                            textAlign: TextAlign.center,
-                            overflow: TextOverflow.fade,
-                            maxLines: 1,
-                            softWrap: true,
-                          ),
-                        )
-                      ],
+                          Container(
+                            width: MediaQuery.of(context).size.width * .25,
+                            child: Text(
+                              mainProvider
+                                  .getLessons[index].data["lesson_title"],
+                              style:
+                                  TextStyle(color: primary, fontFamily: 'hero'),
+                              textAlign: TextAlign.center,
+                              overflow: TextOverflow.fade,
+                              maxLines: 1,
+                              softWrap: true,
+                            ),
+                          )
+                        ],
+                      ),
                     );
                   }),
             ),

@@ -106,4 +106,16 @@ class MainProvider with ChangeNotifier {
     _lessons = newLessons;
     notifyListeners();
   }
+
+  //Guardar leccion actual
+
+  DocumentSnapshot _lesson;
+  DocumentSnapshot get getLesson => _lesson;
+  set setLesson(DocumentSnapshot newlesson) {
+    _lesson = newlesson;
+    notifyListeners();
+  }
+
+  //VideoController
+  
 }
