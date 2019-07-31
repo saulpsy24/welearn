@@ -1,14 +1,20 @@
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart' as HTML;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
+import 'package:welearn/main.dart';
+import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/fullscreen.dart';
 import 'package:welearn/styles/styles.dart';
 
 class LessonPage extends StatefulWidget {
+  final DocumentSnapshot lesson;
+  LessonPage({this.lesson});
   @override
   _LessonPageState createState() => _LessonPageState();
 }
@@ -22,9 +28,7 @@ class _LessonPageState extends State<LessonPage> {
   int inicialm = 0;
   int index = 0;
 
-  String webContent =
-      '<h1 style="text-align: center;">Titulo de la lección</h1><img style="display:block;width:50%;height:100px" src="https://disolutionsmx.com/images/Logo.png"/><p style="text-align: center;"><strong>Lorem Ipsum</strong><span> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</span></p><h1 style="text-align: center;">Titulo de la lección</h1><p style="text-align: center;"><strong>Lorem Ipsum</strong><span> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</span></p><iframe width="560" height="315" src="https://www.youtube.com/embed/sPeGGyAfVo0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>';
-
+  String webContent;
   @override
   void setState(fn) {
     if (mounted) {
@@ -39,8 +43,8 @@ class _LessonPageState extends State<LessonPage> {
     currentPos = 0;
     minutos = 0;
     segundos = 0;
-    _controller = VideoPlayerController.network(
-        'https://firebasestorage.googleapis.com/v0/b/welearn-4b24d.appspot.com/o/big_buck_bunny_720p_20mb.mp4?alt=media&token=bc2b9932-8eea-4795-82a0-8e611033e110');
+    _controller =
+        VideoPlayerController.network(widget.lesson.data["lesson_video"]);
     _controller.initialize().then((_) {
       inicial = _controller.value.duration.inSeconds;
       while (inicial > 60) {
@@ -49,7 +53,8 @@ class _LessonPageState extends State<LessonPage> {
       }
 
       setState(() {
-        _controller.setVolume(0.0);
+        webContent = widget.lesson.data["lesson_content"];
+        _controller.setVolume(100.0);
         _controller.play();
         segundos = inicial;
         minutos = inicialm;
@@ -62,6 +67,7 @@ class _LessonPageState extends State<LessonPage> {
 
   @override
   Widget build(BuildContext context) {
+    var mainProvider = Provider.of<MainProvider>(context);
     Icon miicono = Icon(
       FontAwesomeIcons.pause,
       size: MediaQuery.of(context).devicePixelRatio * 6,
@@ -82,14 +88,15 @@ class _LessonPageState extends State<LessonPage> {
             })
           : null;
     });
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black),
         brightness: Brightness.light,
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         elevation: 0,
         title: Text(
-          'LECCION',
+          widget.lesson.data["lesson_title"],
           style: TextStyle(color: Colors.black, fontFamily: 'hero'),
         ),
       ),
@@ -134,6 +141,55 @@ class _LessonPageState extends State<LessonPage> {
       body: SafeArea(
         child: ListView(
           children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height * .13,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                border: Border(
+                  bottom:BorderSide(
+                    color: Colors.black38,
+                  ),
+                ),
+              ),
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: mainProvider.getLessons.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Column(
+                      children: <Widget>[
+                        Container(
+                          height: MediaQuery.of(context).size.height * .09,
+                          width: MediaQuery.of(context).size.height * .09,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(
+                                MediaQuery.of(context).size.height * .06),
+                            border: Border.all(color: primary),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              alignment: Alignment.centerLeft,
+                              image: NetworkImage(mainProvider
+                                  .getLessons[index].data["lesson_image"]),
+                            ),
+                          ),
+                          child: Container(),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * .25,
+                          child: Text(
+                            mainProvider.getLessons[index].data["lesson_title"],
+                            style:
+                                TextStyle(color: primary, fontFamily: 'hero'),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            softWrap: true,
+                          ),
+                        )
+                      ],
+                    );
+                  }),
+            ),
             Center(
                 child: Stack(
               children: <Widget>[
@@ -255,10 +311,14 @@ class _LessonPageState extends State<LessonPage> {
               height: MediaQuery.of(context).size.height * .5,
               child: ListView(
                 children: <Widget>[
-                  HTML.HtmlWidget(
-                    webContent,
-                    webView: true,
-                  )
+                  webContent != null
+                      ? HTML.HtmlWidget(
+                          webContent,
+                          webView: true,
+                        )
+                      : Center(
+                          child: CircularProgressIndicator(),
+                        )
                 ],
               ),
             ),

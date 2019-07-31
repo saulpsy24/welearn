@@ -27,7 +27,7 @@ dependencies:
   flutter_form_builder: ^3.2.8
   firebase_auth: ^0.11.1+11
   font_awesome_flutter: ^8.5.0
-  cloud_firestore: ^0.12.7
+  cloud_firestore: ^0.12.9
   fl_chart: ^0.1.5
   rflutter_alert: ^1.0.3
   flutter_animation_progress_bar: ^1.0.0

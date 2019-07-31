@@ -8,6 +8,7 @@ import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/hometabs/tab1.dart';
 import 'package:welearn/screens/hometabs/tab2.dart';
 import 'package:welearn/screens/hometabs/tab3.dart';
+import 'package:welearn/screens/live_class.dart';
 
 class RootPage extends StatelessWidget {
   @override
@@ -26,7 +27,7 @@ class RootPage extends StatelessWidget {
           }
         case 2:
           {
-            return VideoApp();
+            return LiveStreamClass();
           }
         default:
           return Container(

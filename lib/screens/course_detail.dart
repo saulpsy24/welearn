@@ -177,24 +177,7 @@ class CourseDetail extends StatelessWidget {
                               ),
                             ],
                           ),
-                          Container(
-                            child: Container(
-                              margin: EdgeInsets.all(10),
-                              width: 100,
-                              child: MaterialButton(
-                                shape: StadiumBorder(),
-                                onPressed: () {},
-                                color: primary,
-                                child: Text(
-                                  'Entrar al Curso',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontFamily: 'hero',
-                                      color: Colors.white),
-                                ),
-                              ),
-                            ),
-                          ),
+                          
                           StreamBuilder<QuerySnapshot>(
                             stream: Firestore.instance
                                 .collection('course_units')
@@ -227,8 +210,8 @@ class CourseDetail extends StatelessWidget {
                                             padding: EdgeInsets.all(6),
                                             decoration: BoxDecoration(
                                                 gradient: LinearGradient(
-                                                  begin: Alignment.topCenter,
-                                                  end: Alignment.bottomCenter,
+                                                    begin: Alignment.topCenter,
+                                                    end: Alignment.bottomCenter,
                                                     colors: [
                                                       Color.fromARGB(
                                                           250, 30, 150, 156),
@@ -266,6 +249,11 @@ class CourseDetail extends StatelessWidget {
                                                 ),
                                                 expanded: GestureDetector(
                                                   onTap: () {
+                                                    mainProvider.unitName =
+                                                        document
+                                                            .data["unit_name"];
+                                                    mainProvider.unitInfo=document;
+
                                                     Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
@@ -289,14 +277,6 @@ class CourseDetail extends StatelessWidget {
                                                       FlatButton(
                                                         shape: StadiumBorder(),
                                                         color: primary,
-                                                        onPressed: () {
-                                                          Navigator.push(
-                                                              context,
-                                                              MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          LessonsPage()));
-                                                        },
                                                         child: Text(
                                                           "Entrar",
                                                           style: TextStyle(

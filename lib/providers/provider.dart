@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -53,30 +54,56 @@ class MainProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  List<Widget> _mCI = [MyCourseCard(),MyCourseCard()];
+  List<Widget> _mCI = [MyCourseCard(), MyCourseCard()];
 
-  List<Widget> get myCourses =>_mCI;
+  List<Widget> get myCourses => _mCI;
 
-  set myCourses(List<Widget>myWidget){
-    _mCI=myWidget;
+  set myCourses(List<Widget> myWidget) {
+    _mCI = myWidget;
     notifyListeners();
   }
 
   bool _courseFlag = false;
-  get courseFlag =>_courseFlag;
-  set courseFlag(bool newState){
-    _courseFlag=newState;
+  get courseFlag => _courseFlag;
+  set courseFlag(bool newState) {
+    _courseFlag = newState;
     notifyListeners();
   }
 
   //Guardamos el id DEL CURSO
-  String _courseId="";
+  String _courseId = "";
 
-  String get  courseId=>_courseId;
+  String get courseId => _courseId;
 
-  set courseId(String newId){
-    _courseId=newId;
+  set courseId(String newId) {
+    _courseId = newId;
+    notifyListeners();
+  }
+  //Guardamos el nombre de la unidad
+
+  String _unitName;
+  String get unitName => _unitName;
+  set unitName(String newUnitName) {
+    _unitName = newUnitName;
     notifyListeners();
   }
 
+  //Guardamos el UnitId;
+
+  DocumentSnapshot _unit;
+
+  DocumentSnapshot get unitInfo => _unit;
+  set unitInfo(DocumentSnapshot newUnit) {
+    _unit = newUnit;
+    notifyListeners();
+  }
+
+  //Guardar todas las lecciones
+
+  List<DocumentSnapshot> _lessons;
+  List<DocumentSnapshot> get getLessons => _lessons;
+  set setLessons(List<DocumentSnapshot> newLessons) {
+    _lessons = newLessons;
+    notifyListeners();
+  }
 }
