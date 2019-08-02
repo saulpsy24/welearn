@@ -116,6 +116,30 @@ class MainProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  //VideoController
-  
+  int _numeroLecciones = 1;
+
+  int get getnumeroLecciones => _numeroLecciones;
+  set numeroLecciones(int newNumero) {
+    if(_numeroLecciones ==1){
+      _numeroLecciones = newNumero;
+      
+    }else{
+      _numeroLecciones = newNumero;
+    }
+  }
+
+  int _progreso=0;
+  int get getProgreso =>_progreso;
+  set setProgreso ( int nuevoProgreso){
+    _progreso = nuevoProgreso;
+  }
+
+  List _leccionesUnidad=[];
+
+  List get leccionesUnidad => _leccionesUnidad;
+
+  set leccionesUnidad(List nuevoobjeto) {
+    _leccionesUnidad=_leccionesUnidad + nuevoobjeto;
+    
+  }
 }

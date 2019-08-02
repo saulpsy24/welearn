@@ -4,16 +4,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:welearn/components/oninit.dart';
 import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/hometabs/tab1.dart';
 import 'package:welearn/screens/hometabs/tab2.dart';
-import 'package:welearn/screens/hometabs/tab3.dart';
 import 'package:welearn/screens/live_class.dart';
+import 'package:welearn/styles/styles.dart';
 
 class RootPage extends StatelessWidget {
+
+  int totallecciones = 0;
   @override
   Widget build(BuildContext context) {
     final mainProvider = Provider.of<MainProvider>(context);
+
     Widget _body() {
       switch (mainProvider.page) {
         case 0:
@@ -36,79 +40,94 @@ class RootPage extends StatelessWidget {
       }
     }
 
-    return Scaffold(
-        appBar: AppBar(
-          elevation: 0,
-          brightness: Brightness.light,
-          title: Text(
-            mainProvider.pageName,
-            style: TextStyle(
-                color: Colors.black87, fontFamily: 'hero', fontSize: 17),
+    
+
+
+    return StatefulWrapper(
+      onInit: () {},
+      child: Scaffold(
+          appBar: AppBar(
+            elevation: 0,
+            brightness: Brightness.light,
+            title: Text(
+              mainProvider.pageName,
+              style: TextStyle(
+                  color: Colors.black87, fontFamily: 'hero', fontSize: 17),
+            ),
+            backgroundColor: Colors.transparent,
+            actionsIconTheme: IconThemeData(color: Colors.black38),
+            actions: <Widget>[
+              IconButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut();
+                },
+                icon: Icon(FontAwesomeIcons.search),
+              )
+            ],
           ),
-          backgroundColor: Colors.transparent,
-          actionsIconTheme: IconThemeData(color: Colors.black38),
-          actions: <Widget>[
-            IconButton(
-              onPressed: () {
-                FirebaseAuth.instance.signOut();
-              },
-              icon: Icon(FontAwesomeIcons.search),
-            )
-          ],
-        ),
-        body: _body(),
-        bottomNavigationBar: BubbleBottomBar(
-          opacity: .2,
-          currentIndex: mainProvider.page,
-          onTap: (index) {
-            mainProvider.page = index;
-            mainProvider.page == 1
-                ? mainProvider.pageName = "USUARIO"
-                : mainProvider.page == 2
-                    ? mainProvider.pageName = "MENSAJES"
-                    : mainProvider.pageName = "INICIO";
-          },
-          borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-          elevation: 8, //new
-          hasNotch: true, //new
-          hasInk: true, //new, gives a cute ink effect
-          inkColor:
-              Colors.black12, //optional, uses theme color if not specified
-          items: <BubbleBottomBarItem>[
-            BubbleBottomBarItem(
-                backgroundColor: Colors.red,
-                icon: Icon(
-                  Icons.dashboard,
-                  color: Colors.black,
-                ),
-                activeIcon: Icon(
-                  Icons.dashboard,
-                  color: Colors.red,
-                ),
-                title: Text("Inicio")),
-            BubbleBottomBarItem(
-                backgroundColor: Colors.deepPurple,
-                icon: Icon(
-                  Icons.people,
-                  color: Colors.black,
-                ),
-                activeIcon: Icon(
-                  Icons.people,
-                  color: Colors.deepPurple,
-                ),
-                title: Text("Mi Cuenta")),
-            BubbleBottomBarItem(
-                backgroundColor: Colors.indigo,
-                icon: Icon(
-                  Icons.folder_open,
-                  color: Colors.black,
-                ),
-                activeIcon: Icon(
-                  Icons.folder_open,
-                  color: Colors.indigo,
-                ),
-                title: Text("Archivo")),
-          ],
-        ));
+          body: _body(),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: primary,
+            child: Icon(Icons.camera_alt),
+            onPressed: () {
+              print(mainProvider.getnumeroLecciones);
+            },
+          ),
+          floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+          bottomNavigationBar: BubbleBottomBar(
+            
+            opacity: .2,
+            hasNotch:true,
+            hasInk:true,fabLocation: BubbleBottomBarFabLocation.end,
+            currentIndex: mainProvider.page,
+            onTap: (index) {
+              mainProvider.page = index;
+              mainProvider.page == 1
+                  ? mainProvider.pageName = "USUARIO"
+                  : mainProvider.page == 2
+                      ? mainProvider.pageName = "MENSAJES"
+                      : mainProvider.pageName = "INICIO";
+            },
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+            elevation: 8, //new
+            inkColor:
+                Colors.black12, //optional, uses theme color if not specified
+            items: <BubbleBottomBarItem>[
+              BubbleBottomBarItem(
+                  backgroundColor: Colors.red,
+                  icon: Icon(
+                    Icons.dashboard,
+                    color: Colors.black,
+                  ),
+                  activeIcon: Icon(
+                    Icons.dashboard,
+                    color: Colors.red,
+                  ),
+                  title: Text("Inicio")),
+              BubbleBottomBarItem(
+                  backgroundColor: Colors.deepPurple,
+                  icon: Icon(
+                    Icons.people,
+                    color: Colors.black,
+                  ),
+                  activeIcon: Icon(
+                    Icons.people,
+                    color: Colors.deepPurple,
+                  ),
+                  title: Text("Mi Cuenta")),
+              BubbleBottomBarItem(
+                  backgroundColor: Colors.indigo,
+                  icon: Icon(
+                    Icons.folder_open,
+                    color: Colors.black,
+                  ),
+                  activeIcon: Icon(
+                    Icons.folder_open,
+                    color: Colors.indigo,
+                  ),
+                  title: Text("Archivo")),
+            ],
+          )),
+    );
   }
 }

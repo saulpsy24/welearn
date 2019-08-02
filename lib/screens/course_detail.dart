@@ -275,6 +275,7 @@ class CourseDetail extends StatelessWidget {
                                                         ),
                                                       ),
                                                       FlatButton(
+                                                        onPressed:(){},
                                                         shape: StadiumBorder(),
                                                         color: primary,
                                                         child: Text(

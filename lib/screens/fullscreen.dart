@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:video_player/video_player.dart';
 import 'package:welearn/styles/styles.dart';
@@ -68,8 +67,8 @@ class _FullScreenVideoState extends State<FullScreenVideo> {
                   Icons.replay,
                   size: MediaQuery.of(context).devicePixelRatio * 6,
                 );
-              })
-            : null;
+              }): null;
+            
 
         var asr = _controller.value.position.inSeconds.toInt() *
             (MediaQuery.of(context).size.width * .65) /

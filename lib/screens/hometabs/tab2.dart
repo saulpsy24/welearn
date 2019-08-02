@@ -62,27 +62,23 @@ class Tab2 extends StatelessWidget {
                                       color: Colors.black45),
                                 ),
                               ),
-                              FlatButton(
-                                onPressed: () {
-                                  FirebaseAuth.instance
-                                      .signOut()
-                                      .then((onValue) {
-                                    final page = LoginPage();
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => page));
-                                  });
-                                },
-                                child: Text('Log Out',
-                                    style: TextStyle(color: Colors.redAccent)),
-                              )
                             ],
                           );
                         }).toList(),
                       );
                   }
                 },
+              ),
+              FlatButton(
+                onPressed: () {
+                  FirebaseAuth.instance.signOut().then((onValue) {
+                    final page = LoginPage();
+                    Navigator.pushReplacement(
+                        context, MaterialPageRoute(builder: (context) => page));
+                  });
+                },
+                child:
+                    Text('Log Out', style: TextStyle(color: Colors.redAccent)),
               ),
               Container(
                 margin: EdgeInsets.symmetric(

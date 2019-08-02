@@ -7,14 +7,15 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart' as HTML;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
-import 'package:welearn/main.dart';
 import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/fullscreen.dart';
 import 'package:welearn/styles/styles.dart';
 
 class LessonPage extends StatefulWidget {
   final DocumentSnapshot lesson;
-  LessonPage({this.lesson});
+  final String uid;
+  final String c_id;
+  LessonPage({this.lesson, this.c_id, this.uid});
   @override
   _LessonPageState createState() => _LessonPageState();
 }
@@ -65,6 +66,32 @@ class _LessonPageState extends State<LessonPage> {
         index = 0;
       });
     });
+    void addCompleted() async {
+      Firestore.instance
+          .collection('completed')
+          .where("uid", isEqualTo: widget.uid)
+          .where('c_id', isEqualTo: widget.c_id)
+          .where('l_id', isEqualTo: widget.lesson.documentID)
+          .snapshots()
+          .listen((completados) {
+        if (completados.documents.length == 0) {
+          Map<String, dynamic> uid = new Map<String, dynamic>();
+          uid["uid"] = widget.uid;
+          uid["c_id"] = widget.c_id;
+          uid["l_id"] = widget.lesson.documentID;
+
+          DocumentReference currentRegion =
+              Firestore.instance.collection("completed").document();
+
+          Firestore.instance.runTransaction((transaction) async {
+            await transaction.set(currentRegion, uid);
+            print("instance created");
+          });
+        }
+      });
+    }
+
+    addCompleted();
 
     super.initState();
   }
@@ -167,6 +194,8 @@ class _LessonPageState extends State<LessonPage> {
                             MaterialPageRoute(
                                 builder: (context) => LessonPage(
                                       lesson: mainProvider.getLessons[index],
+                                      uid: widget.uid,
+                                      c_id: widget.c_id,
                                     )));
                         mainProvider.setLesson = mainProvider.getLessons[index];
                       },

@@ -5,6 +5,10 @@ import 'package:welearn/components/recomended_card.dart';
 import 'package:welearn/providers/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:welearn/screens/course_detail.dart';
+import 'package:welearn/screens/see_all.dart';
+import 'package:welearn/screens/seeallfree.dart';
+import 'package:welearn/screens/seeallrecomended.dart';
+import 'package:welearn/styles/styles.dart';
 
 class Tab1 extends StatelessWidget {
   @override
@@ -28,10 +32,18 @@ class Tab1 extends StatelessWidget {
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                'Ver Todo',
-                style: TextStyle(
-                    fontFamily: 'hero', fontSize: 17, color: Colors.black45),
+              child: FlatButton(
+                shape: StadiumBorder(),
+                color: primary,
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SeeAllMC()));
+                },
+                child: Text(
+                  'Ver Todo',
+                  style: TextStyle(
+                      fontFamily: 'hero', fontSize: 17, color: Colors.white),
+                ),
               ),
             )
           ],
@@ -43,11 +55,11 @@ class Tab1 extends StatelessWidget {
                 .collection('course_enroll')
                 .where('uid', isEqualTo: mainProvider.currentUser.uid)
                 .snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.hasError)
-                return new Text('Error: ${snapshot.error}');
-              switch (snapshot.connectionState) {
+            builder: (BuildContext context,
+                AsyncSnapshot<QuerySnapshot> inscripciones) {
+              if (inscripciones.hasError)
+                return new Text('Error: ${inscripciones.error}');
+              switch (inscripciones.connectionState) {
                 case ConnectionState.waiting:
                   return new Center(
                     child: CircularProgressIndicator(),
@@ -57,37 +69,46 @@ class Tab1 extends StatelessWidget {
                     itemExtent: MediaQuery.of(context).size.width * .55,
                     scrollDirection: Axis.horizontal,
                     //En documents guardamos toddas las inscripciones del usuario, luego mapeamos, y jalamos en document el detalle de cada curso
-                    children: snapshot.data.documents
-                        .map((DocumentSnapshot document) {
+                    children: inscripciones.data.documents
+                        .map((DocumentSnapshot inscripcion) {
                       return FutureBuilder<DocumentSnapshot>(
                           future: Firestore.instance
                               .collection("courses")
-                              .document(document.data["course_id"])
+                              .document(inscripcion.data["course_id"])
                               .get(),
                           builder: (BuildContext context,
-                              AsyncSnapshot<DocumentSnapshot> documents) {
-                            switch (documents.connectionState) {
+                              AsyncSnapshot<DocumentSnapshot> curso) {
+                            switch (curso.connectionState) {
                               case ConnectionState.none:
                                 return Text('Press button to start.');
                               case ConnectionState.active:
                               case ConnectionState.waiting:
                                 return Text('Awaiting result...');
                               case ConnectionState.done:
-                                if (documents.hasError)
-                                  return Text('Error: ${documents.error}');
-                                return GestureDetector(
-                                  onTap: (){
-                                    
-                                    final page = CourseDetail();
-                                    Navigator.push(context, MaterialPageRoute(builder: (context)=>page));
-                                    mainProvider.courseId=document.data["course_id"];
-                                  },
-                                  child: MyCourseCard(
-                                    courseTitle: documents.data["name"],
-                                    currentProgress: document.data["progress"],
-                                    courseImage: documents.data["image"],
-                                  ),
-                                );
+                                {
+                                  if (curso.hasError) {
+                                    return Text('Error: ${curso.error}');
+                                  } else {
+                                    return InkWell(
+                                      onTap: () {
+                                        mainProvider.courseId =
+                                            curso.data.documentID;
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    CourseDetail()));
+                                      },
+                                      child: Container(
+                                        child: MyCourseCard(
+                                          courseId: curso.data.documentID,
+                                          courseImage: curso.data["image"],
+                                          courseTitle: curso.data["name"],
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                }
                             }
                             return Container();
                           });
@@ -112,10 +133,18 @@ class Tab1 extends StatelessWidget {
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                'Ver Todo',
-                style: TextStyle(
-                    fontFamily: 'hero', fontSize: 17, color: Colors.black45),
+              child: FlatButton(
+                shape: StadiumBorder(),
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SeeAllRC()));
+                },
+                color: primary,
+                child: Text(
+                  'Ver Todo',
+                  style: TextStyle(
+                      fontFamily: 'hero', fontSize: 17, color: Colors.white),
+                ),
               ),
             )
           ],
@@ -138,12 +167,20 @@ class Tab1 extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     children: snapshot.data.documents
                         .map((DocumentSnapshot document) {
-                      return RecomendedCard(
-                        image: document.data['image'],
-                        title: document.data['name'],
-                        rating: document.data['rating'],
-                        price: document.data["price"],
-                      );
+                      return InkWell(
+                          onTap: () {
+                            mainProvider.courseId = document.documentID;
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CourseDetail()));
+                          },
+                          child: RecomendedCard(
+                            image: document.data['image'],
+                            title: document.data['name'],
+                            rating: document.data['rating'],
+                            price: document.data["price"],
+                          ));
                     }).toList(),
                   ),
                 );
@@ -165,10 +202,18 @@ class Tab1 extends StatelessWidget {
             ),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10),
-              child: Text(
-                'Ver Todo',
-                style: TextStyle(
-                    fontFamily: 'hero', fontSize: 17, color: Colors.black45),
+              child: FlatButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SeeFree()));
+                },
+                color: primary,
+                shape: StadiumBorder(),
+                child: Text(
+                  'Ver Todo',
+                  style: TextStyle(
+                      fontFamily: 'hero', fontSize: 17, color: Colors.white),
+                ),
               ),
             )
           ],
@@ -191,12 +236,20 @@ class Tab1 extends StatelessWidget {
                     scrollDirection: Axis.horizontal,
                     children: snapshot.data.documents
                         .map((DocumentSnapshot document) {
-                      return RecomendedCard(
-                        image: document.data['image'],
-                        title: document.data['name'],
-                        rating: document.data['rating'],
-                        price: document.data["price"],
-                      );
+                      return InkWell(
+                          onTap: () {
+                            mainProvider.courseId = document.documentID;
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CourseDetail()));
+                          },
+                          child: RecomendedCard(
+                            image: document.data['image'],
+                            title: document.data['name'],
+                            rating: document.data['rating'],
+                            price: document.data["price"],
+                          ));
                     }).toList(),
                   ),
                 );

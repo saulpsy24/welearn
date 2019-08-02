@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/login.dart';
+import 'package:welearn/styles/styles.dart';
 
 void main() {
    
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
+          primarySwatch: Colors.teal,
         ),
         home: LoginPage(),
       ),

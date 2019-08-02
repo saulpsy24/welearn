@@ -1,8 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:provider/provider.dart';
+import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/homescreen.dart';
 import 'package:welearn/screens/login.dart';
+import 'package:welearn/screens/profile_details.dart';
 import 'package:welearn/styles/styles.dart';
 
 class RegisterPage extends StatelessWidget {
@@ -11,6 +14,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.height;
+    var mainProvider = Provider.of<MainProvider>(context);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black38),
@@ -99,7 +103,8 @@ class RegisterPage extends StatelessWidget {
                                 _fbKeyr.currentState.save();
                                 if (_fbKeyr.currentState.validate()) {
                                   FirebaseAuth.instance.createUserWithEmailAndPassword(email: _fbKeyr.currentState.value['email'],password: _fbKeyr.currentState.value['password']).then((userid){
-                                   final page = HomePage();
+                                   final page = ProfileSet();
+                                   mainProvider.currentUser =userid;
                                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>page));
                                   });
                                 }

@@ -1,5 +1,3 @@
-import 'dart:ui' as prefix0;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -148,7 +146,7 @@ class LessonsPage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => LessonPage(lesson: document,),
+                                    builder: (context) => LessonPage(lesson: document,uid:mainProvider.currentUser.uid,c_id:mainProvider.courseId),
                                   ),
                                 );
                               },
