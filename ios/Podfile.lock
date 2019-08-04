@@ -114,6 +114,7 @@ PODS:
     - Flutter
     - Reachability
   - leveldb-library (1.20)
+  - MTBBarcodeScanner (5.0.11)
   - nanopb (0.3.901):
     - nanopb/decode (= 0.3.901)
     - nanopb/encode (= 0.3.901)
@@ -122,6 +123,9 @@ PODS:
   - path_provider (0.0.1):
     - Flutter
   - Protobuf (3.8.0)
+  - qr_code_scanner (0.0.2):
+    - Flutter
+    - MTBBarcodeScanner
   - Reachability (3.2)
   - screen (0.0.1):
     - Flutter
@@ -139,9 +143,10 @@ DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
-  - Flutter (from `.symlinks/flutter/ios-profile`)
+  - Flutter (from `.symlinks/flutter/ios-release`)
   - keyboard_visibility (from `.symlinks/plugins/keyboard_visibility/ios`)
   - path_provider (from `.symlinks/plugins/path_provider/ios`)
+  - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - screen (from `.symlinks/plugins/screen/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - url_launcher (from `.symlinks/plugins/url_launcher/ios`)
@@ -165,6 +170,7 @@ SPEC REPOS:
     - gRPC-Core
     - GTMSessionFetcher
     - leveldb-library
+    - MTBBarcodeScanner
     - nanopb
     - Protobuf
     - Reachability
@@ -177,11 +183,13 @@ EXTERNAL SOURCES:
   firebase_core:
     :path: ".symlinks/plugins/firebase_core/ios"
   Flutter:
-    :path: ".symlinks/flutter/ios-profile"
+    :path: ".symlinks/flutter/ios-release"
   keyboard_visibility:
     :path: ".symlinks/plugins/keyboard_visibility/ios"
   path_provider:
     :path: ".symlinks/plugins/path_provider/ios"
+  qr_code_scanner:
+    :path: ".symlinks/plugins/qr_code_scanner/ios"
   screen:
     :path: ".symlinks/plugins/screen/ios"
   sqflite:
@@ -214,9 +222,11 @@ SPEC CHECKSUMS:
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
   keyboard_visibility: 96a24de806fe6823c3ad956c01ba2ec6d056616f
   leveldb-library: 08cba283675b7ed2d99629a4bc5fd052cd2bb6a5
+  MTBBarcodeScanner: f453b33c4b7dfe545d8c6484ed744d55671788cb
   nanopb: 2901f78ea1b7b4015c860c2fdd1ea2fee1a18d48
   path_provider: f96fff6166a8867510d2c25fdcc346327cc4b259
   Protobuf: 3f617b9a6e73605565086864c9bc26b2bf2dd5a3
+  qr_code_scanner: 16107718bdad7d708cdf6a5eacdca24b56cdf471
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   screen: abd91ca7bf3426e1cc3646d27e9b2358d6bf07b0
   sqflite: ff1d9da63c06588cc8d1faf7256d741f16989d5a

@@ -42,7 +42,7 @@ class RegisterPage extends StatelessWidget {
                     ),
                   ),
                   FormBuilder(
-                    autovalidate: true,
+                    autovalidate: false,
                     key: _fbKeyr,
                     child: Column(
                       children: <Widget>[
@@ -65,6 +65,7 @@ class RegisterPage extends StatelessWidget {
                               bottom: h * .05, left: w * .07, right: w * .07),
                           child: FormBuilderTextField(
                             attribute: "password",
+                            obscureText: true,
                             decoration: InputDecoration(
                                 labelText: "Password",
                                 prefixIcon: Icon(Icons.lock_outline),

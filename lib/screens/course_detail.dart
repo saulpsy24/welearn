@@ -1,18 +1,53 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/components/incluye_card.dart';
 import 'package:welearn/providers/provider.dart';
+import 'package:welearn/screens/comprado_detail.dart';
 import 'package:welearn/screens/live_class.dart';
-import 'package:welearn/screens/unit_lessons.dart';
 import 'package:welearn/styles/styles.dart';
 
-class CourseDetail extends StatelessWidget {
+class CourseDetail extends StatefulWidget {
+  final String courseId;
+  final String userId;
+  CourseDetail({this.courseId, this.userId});
+  @override
+  _CourseDetailState createState() => _CourseDetailState();
+}
+
+class _CourseDetailState extends State<CourseDetail> {
+  bool inscrito = false;
+  QuerySnapshot getInscripcion;
+  @override
+  void initState() {
+    void getunidades() async {
+      getInscripcion = await Firestore.instance
+          .collection('course_enroll')
+          .where("uid", isEqualTo: widget.userId)
+          .where("course_id", isEqualTo: widget.courseId)
+          .getDocuments();
+      getInscripcion.documents.length > 0
+          ? setState(() {
+              inscrito = true;
+            })
+          : setState(() {
+              inscrito = false;
+            });
+    }
+
+    getunidades();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mainProvider = Provider.of<MainProvider>(context);
+    if (inscrito) {
+      print(inscrito);
+      return Comprado();
+    }
 
     return FutureBuilder<DocumentSnapshot>(
       future: Firestore.instance
@@ -177,7 +212,6 @@ class CourseDetail extends StatelessWidget {
                               ),
                             ],
                           ),
-                          
                           StreamBuilder<QuerySnapshot>(
                             stream: Firestore.instance
                                 .collection('course_units')
@@ -190,7 +224,9 @@ class CourseDetail extends StatelessWidget {
                                 return new Text('Error: ${snapshot.error}');
                               switch (snapshot.connectionState) {
                                 case ConnectionState.waiting:
-                                  return new Text('Loading...');
+                                  return new Center(
+                          child: CircularProgressIndicator(),
+                        );
                                 default:
                                   return new Column(
                                     children: snapshot.data.documents
@@ -248,18 +284,7 @@ class CourseDetail extends StatelessWidget {
                                                       TextOverflow.ellipsis,
                                                 ),
                                                 expanded: GestureDetector(
-                                                  onTap: () {
-                                                    mainProvider.unitName =
-                                                        document
-                                                            .data["unit_name"];
-                                                    mainProvider.unitInfo=document;
-
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                LessonsPage()));
-                                                  },
+                                                  onTap: () {},
                                                   child: Column(
                                                     children: <Widget>[
                                                       Text(
@@ -275,7 +300,7 @@ class CourseDetail extends StatelessWidget {
                                                         ),
                                                       ),
                                                       FlatButton(
-                                                        onPressed:(){},
+                                                        onPressed: () {},
                                                         shape: StadiumBorder(),
                                                         color: primary,
                                                         child: Text(
@@ -318,16 +343,33 @@ class CourseDetail extends StatelessWidget {
                   child: FloatingActionButton.extended(
                     materialTapTargetSize: MaterialTapTargetSize.padded,
                     shape: StadiumBorder(),
-                    onPressed: () {},
-                    backgroundColor: primary,
+                    onPressed: () {
+                      if (ds.data["price"] != "FREE") {
+                        print(
+                            'Este curso es de pago, inscribir por backoffice');
+                      } else {
+                        Map<String, dynamic> uid = new Map<String, dynamic>();
+                        uid["uid"] = widget.userId;
+                        uid["course_id"] = widget.courseId;
+
+                        DocumentReference currentRegion = Firestore.instance
+                            .collection("course_enroll")
+                            .document();
+
+                        Firestore.instance.runTransaction((transaction) async {
+                          await transaction.set(currentRegion, uid);
+                          
+                        });
+                      }
+                    },
+                    backgroundColor: Colors.redAccent,
                     elevation: 1,
-                    icon: Icon(FontAwesomeIcons.dollarSign),
+                    icon: Icon(Icons.monetization_on),
                     label: Text(ds.data["price"] != "FREE"
-                        ? ds.data["price"] + 'MXN'
-                        : ds.data["price"]),
+                        ? "${ds.data["price"]}.00MXN"
+                        : "Inscribirme"),
                   ),
-                ),
-              )
+                ))
             : Scaffold(
                 body: Center(
                   child: CircularProgressIndicator(),

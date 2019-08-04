@@ -9,6 +9,7 @@ class StatefulWrapper extends StatefulWidget {
 }
 
 class _StatefulWrapperState extends State<StatefulWrapper> {
+  var render;
   @override
   void initState() {
     if (widget.onInit != null) {

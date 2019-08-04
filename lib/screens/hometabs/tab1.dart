@@ -10,7 +10,40 @@ import 'package:welearn/screens/seeallfree.dart';
 import 'package:welearn/screens/seeallrecomended.dart';
 import 'package:welearn/styles/styles.dart';
 
-class Tab1 extends StatelessWidget {
+class Tab1 extends StatefulWidget {
+  final String uid;
+  Tab1({this.uid});
+  @override
+  _Tab1State createState() => _Tab1State();
+}
+
+class _Tab1State extends State<Tab1> {
+  QuerySnapshot inscripciones;
+  double altura = 1;
+  @override
+  void initState() {
+    void getInscripciones() async {
+      inscripciones = await Firestore.instance
+          .collection('course_enroll')
+          .where('uid', isEqualTo: widget.uid)
+          .getDocuments();
+
+      if (inscripciones.documents.length == 0) {
+        setState(() {
+          altura = 10;
+        });
+      } else {
+        setState(() {
+          altura = 200;
+        });
+      }
+    }
+
+    getInscripciones();
+
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final mainProvider = Provider.of<MainProvider>(context);
@@ -48,8 +81,9 @@ class Tab1 extends StatelessWidget {
             )
           ],
         ),
-        Container(
-          height: 200,
+        AnimatedContainer(
+          duration: Duration(milliseconds: 500),
+          height: altura,
           child: StreamBuilder<QuerySnapshot>(
             stream: Firestore.instance
                 .collection('course_enroll')
@@ -65,55 +99,63 @@ class Tab1 extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   );
                 default:
-                  return new ListView(
-                    itemExtent: MediaQuery.of(context).size.width * .55,
-                    scrollDirection: Axis.horizontal,
-                    //En documents guardamos toddas las inscripciones del usuario, luego mapeamos, y jalamos en document el detalle de cada curso
-                    children: inscripciones.data.documents
-                        .map((DocumentSnapshot inscripcion) {
-                      return FutureBuilder<DocumentSnapshot>(
-                          future: Firestore.instance
-                              .collection("courses")
-                              .document(inscripcion.data["course_id"])
-                              .get(),
-                          builder: (BuildContext context,
-                              AsyncSnapshot<DocumentSnapshot> curso) {
-                            switch (curso.connectionState) {
-                              case ConnectionState.none:
-                                return Text('Press button to start.');
-                              case ConnectionState.active:
-                              case ConnectionState.waiting:
-                                return Text('Awaiting result...');
-                              case ConnectionState.done:
-                                {
-                                  if (curso.hasError) {
-                                    return Text('Error: ${curso.error}');
-                                  } else {
-                                    return InkWell(
-                                      onTap: () {
-                                        mainProvider.courseId =
-                                            curso.data.documentID;
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    CourseDetail()));
-                                      },
-                                      child: Container(
-                                        child: MyCourseCard(
-                                          courseId: curso.data.documentID,
-                                          courseImage: curso.data["image"],
-                                          courseTitle: curso.data["name"],
+                  {
+                    
+                    return new ListView(
+                      itemExtent: MediaQuery.of(context).size.width * .55,
+                      scrollDirection: Axis.horizontal,
+                      //En documents guardamos toddas las inscripciones del usuario, luego mapeamos, y jalamos en document el detalle de cada curso
+                      children: inscripciones.data.documents
+                          .map((DocumentSnapshot inscripcion) {
+                        return FutureBuilder<DocumentSnapshot>(
+                            future: Firestore.instance
+                                .collection("courses")
+                                .document(inscripcion.data["course_id"])
+                                .get(),
+                            builder: (BuildContext context,
+                                AsyncSnapshot<DocumentSnapshot> curso) {
+                              switch (curso.connectionState) {
+                                case ConnectionState.none:
+                                  return Text('Press button to start.');
+                                case ConnectionState.active:
+                                case ConnectionState.waiting:
+                                  return Center(child: CircularProgressIndicator(),);
+                                case ConnectionState.done:
+                                  {
+                                    if (curso.hasError) {
+                                      return Text('Error: ${curso.error}');
+                                    } else {
+                                      return InkWell(
+                                        onTap: () {
+                                          mainProvider.courseId =
+                                              curso.data.documentID;
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      CourseDetail(
+                                                        courseId: mainProvider
+                                                            .courseId,
+                                                        userId: mainProvider
+                                                            .currentUser.uid,
+                                                      )));
+                                        },
+                                        child: Container(
+                                          child: MyCourseCard(
+                                            courseId: curso.data.documentID,
+                                            courseImage: curso.data["image"],
+                                            courseTitle: curso.data["name"],
+                                          ),
                                         ),
-                                      ),
-                                    );
+                                      );
+                                    }
                                   }
-                                }
-                            }
-                            return Container();
-                          });
-                    }).toList(),
-                  );
+                              }
+                              return Container();
+                            });
+                      }).toList(),
+                    );
+                  }
               }
             },
           ),
@@ -173,7 +215,10 @@ class Tab1 extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CourseDetail()));
+                                    builder: (context) => CourseDetail(
+                                          courseId: mainProvider.courseId,
+                                          userId: mainProvider.currentUser.uid,
+                                        )));
                           },
                           child: RecomendedCard(
                             image: document.data['image'],
@@ -242,7 +287,10 @@ class Tab1 extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CourseDetail()));
+                                    builder: (context) => CourseDetail(
+                                          courseId: mainProvider.courseId,
+                                          userId: mainProvider.currentUser.uid,
+                                        )));
                           },
                           child: RecomendedCard(
                             image: document.data['image'],

@@ -38,7 +38,7 @@ class LessonsPage extends StatelessWidget {
                     blurRadius: 1),
               ],
             ),
-            height: MediaQuery.of(context).size.width * .40,
+            height: MediaQuery.of(context).size.width * .380,
             width: MediaQuery.of(context).size.width,
             child: StreamBuilder<QuerySnapshot>(
               stream: Firestore.instance

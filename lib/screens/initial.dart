@@ -1,19 +1,26 @@
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/components/oninit.dart';
 import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/hometabs/tab1.dart';
 import 'package:welearn/screens/hometabs/tab2.dart';
-import 'package:welearn/screens/live_class.dart';
+import 'package:welearn/screens/hometabs/tab3.dart';
+import 'package:welearn/screens/qr_scan.dart';
 import 'package:welearn/styles/styles.dart';
 
-class RootPage extends StatelessWidget {
 
-  int totallecciones = 0;
+class RootPage extends StatefulWidget {
+
+  @override
+  _RootPageState createState() => _RootPageState();
+}
+
+class _RootPageState extends State<RootPage> {
+  final int totallecciones = 0;
+  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
+
   @override
   Widget build(BuildContext context) {
     final mainProvider = Provider.of<MainProvider>(context);
@@ -22,7 +29,9 @@ class RootPage extends StatelessWidget {
       switch (mainProvider.page) {
         case 0:
           {
-            return Tab1();
+            return Tab1(
+              uid: mainProvider.currentUser.uid,
+            );
           }
 
         case 1:
@@ -31,7 +40,7 @@ class RootPage extends StatelessWidget {
           }
         case 2:
           {
-            return LiveStreamClass();
+            return Tab3();
           }
         default:
           return Container(
@@ -39,9 +48,6 @@ class RootPage extends StatelessWidget {
           );
       }
     }
-
-    
-
 
     return StatefulWrapper(
       onInit: () {},
@@ -56,36 +62,30 @@ class RootPage extends StatelessWidget {
             ),
             backgroundColor: Colors.transparent,
             actionsIconTheme: IconThemeData(color: Colors.black38),
-            actions: <Widget>[
-              IconButton(
-                onPressed: () {
-                  FirebaseAuth.instance.signOut();
-                },
-                icon: Icon(FontAwesomeIcons.search),
-              )
-            ],
+
           ),
           body: _body(),
           floatingActionButton: FloatingActionButton(
             backgroundColor: primary,
             child: Icon(Icons.camera_alt),
             onPressed: () {
-              print(mainProvider.getnumeroLecciones);
+              final page = QRViewExample();
+              Navigator.push(context, MaterialPageRoute(builder: (context)=>page));
+
             },
           ),
           floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
           bottomNavigationBar: BubbleBottomBar(
-            
             opacity: .2,
-            hasNotch:true,
-            hasInk:true,fabLocation: BubbleBottomBarFabLocation.end,
+            hasNotch: true,
+            hasInk: true, fabLocation: BubbleBottomBarFabLocation.end,
             currentIndex: mainProvider.page,
             onTap: (index) {
               mainProvider.page = index;
               mainProvider.page == 1
                   ? mainProvider.pageName = "USUARIO"
                   : mainProvider.page == 2
-                      ? mainProvider.pageName = "MENSAJES"
+                      ? mainProvider.pageName = "NOTICIAS"
                       : mainProvider.pageName = "INICIO";
             },
             borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -96,11 +96,11 @@ class RootPage extends StatelessWidget {
               BubbleBottomBarItem(
                   backgroundColor: Colors.red,
                   icon: Icon(
-                    Icons.dashboard,
+                    Icons.home,
                     color: Colors.black,
                   ),
                   activeIcon: Icon(
-                    Icons.dashboard,
+                    Icons.home,
                     color: Colors.red,
                   ),
                   title: Text("Inicio")),
@@ -118,14 +118,14 @@ class RootPage extends StatelessWidget {
               BubbleBottomBarItem(
                   backgroundColor: Colors.indigo,
                   icon: Icon(
-                    Icons.folder_open,
+                    Icons.notifications,
                     color: Colors.black,
                   ),
                   activeIcon: Icon(
-                    Icons.folder_open,
+                    Icons.notifications,
                     color: Colors.indigo,
                   ),
-                  title: Text("Archivo")),
+                  title: Text("Noticias")),
             ],
           )),
     );

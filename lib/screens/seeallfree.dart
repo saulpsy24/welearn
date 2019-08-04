@@ -30,7 +30,9 @@ class SeeFree extends StatelessWidget {
           if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
           switch (snapshot.connectionState) {
             case ConnectionState.waiting:
-              return new Text('Loading...');
+              return new Center(
+                          child: CircularProgressIndicator(),
+                        );
             default:
               return Container(
                 height: MediaQuery.of(context).size.height * .85,

@@ -1,63 +1,40 @@
-import 'package:video_player/video_player.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:welearn/styles/styles.dart';
-import 'package:chewie/chewie.dart';
 
-class VideoApp extends StatefulWidget {
+class Tab3 extends StatefulWidget {
   @override
-  _VideoAppState createState() => _VideoAppState();
+  _Tab3State createState() => _Tab3State();
 }
 
-class _VideoAppState extends State<VideoApp> {
-  VideoPlayerController _controller;
-  ChewieController _chewieController;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = VideoPlayerController.network(
-        'http://www.sample-videos.com/video123/mp4/720/big_buck_bunny_720p_20mb.mp4')
-      ..initialize().then((_) {
-        // Ensure the first frame is shown after the video is initialized, even before the play button has been pressed.
-        setState(() {
-        });
-      });
-   
-  }
-
+class _Tab3State extends State<Tab3> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: <Widget>[
-        Center(
-          child: _controller.value.initialized
-              ? Container(
-                  color: Colors.black,
-                  child: Chewie(
-                    controller: _chewieController,
-                  ),
-                )
-              : Container(
-                  height: MediaQuery.of(context).size.width / 1.7,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.black,
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      strokeWidth: 1,
-                      backgroundColor: primary,
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('news').snapshots(),
+      builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+        if (snapshot.hasError) return new Text('Error: ${snapshot.error}');
+        switch (snapshot.connectionState) {
+          case ConnectionState.waiting:
+            return new Center(
+                          child: CircularProgressIndicator(),
+                        );
+          default:
+            {
+              print(snapshot.data.documents);
+              return new ListView(
+                children:
+                    snapshot.data.documents.map((DocumentSnapshot document) {
+                  return Card(
+                    child: new ListTile(
+                      title: new Text(document['news_title']),
+                      subtitle: new Text(document['news_body']),
                     ),
-                  ),
-                ),
-        ),
-      ],
+                  );
+                }).toList(),
+              );
+            }
+        }
+      },
     );
-  }
-
-  void dispose() {
-    _controller.dispose();
-    _chewieController.dispose();
-
-    super.dispose();
   }
 }

@@ -57,7 +57,7 @@ class SeeAllMC extends StatelessWidget {
                               return Text('Press button to start.');
                             case ConnectionState.active:
                             case ConnectionState.waiting:
-                              return Text('Awaiting result...');
+                              return Center(child: CircularProgressIndicator(),);
                             case ConnectionState.done:
                               {
                                 if (curso.hasError) {

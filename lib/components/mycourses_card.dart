@@ -30,6 +30,13 @@ class _MyCourseCardState extends State<MyCourseCard> {
   var unidades;
   QuerySnapshot lecciones;
   @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
+  }
+
+  @override
   void initState() {
     void getunidades() async {
       unidades = await Firestore.instance
@@ -44,8 +51,6 @@ class _MyCourseCardState extends State<MyCourseCard> {
 
         setState(() {
           numeroLecciones = numeroLecciones + lecciones.documents.length;
-
-          print(numeroLecciones);
         });
       });
     }
@@ -84,22 +89,26 @@ class _MyCourseCardState extends State<MyCourseCard> {
               margin: EdgeInsets.only(top: 25),
               child: Text(
                 widget.courseTitle,
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: Colors.white, fontFamily: 'hero', fontSize: 17),
+                  color: Colors.white,
+                  fontFamily: 'hero',
+                  fontSize: 17,
+                ),
               ),
             ),
             //duracion del curso
             Row(
               children: <Widget>[
                 Container(
-                  padding: EdgeInsets.all(15),
+                  padding: EdgeInsets.all(10),
                   child: Icon(
                     FontAwesomeIcons.clock,
                     color: Colors.white,
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+                  padding: EdgeInsets.symmetric(vertical: 15, horizontal: 2),
                   child: Text(
                     'Quedan 5 días',
                     style: TextStyle(color: Colors.white, fontFamily: 'hero'),
@@ -122,17 +131,19 @@ class _MyCourseCardState extends State<MyCourseCard> {
                       return new Text('Error: ${lessonsCompleted.error}');
                     switch (lessonsCompleted.connectionState) {
                       case ConnectionState.waiting:
-                        return new Text('Loading...');
+                        return new Center(
+                          child: CircularProgressIndicator(),
+                        );
                       default:
                         {
                           lessonsCompleted.data.documents.length != 0
-                              ? mainProvider.setProgreso =
-                                  (lessonsCompleted.data.documents.length *
-                                          100) ~/
-                                      (numeroLecciones != 0 ? numeroLecciones : 1)
+                              ? mainProvider.setProgreso = (lessonsCompleted
+                                          .data.documents.length *
+                                      100) ~/
+                                  (numeroLecciones != 0 ? numeroLecciones : 1)
                               : mainProvider.setProgreso = 0;
                           return Container(
-                            width: MediaQuery.of(context).size.width * .45,
+                            width: MediaQuery.of(context).size.width * .40,
                             child: FAProgressBar(
                               progressColor: primary,
                               backgroundColor:

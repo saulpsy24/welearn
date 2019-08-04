@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
@@ -5,6 +6,7 @@ import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:welearn/components/oninit.dart';
 import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/initial.dart';
+import 'package:welearn/screens/profile_details.dart';
 import 'package:welearn/screens/register.dart';
 import 'package:welearn/styles/styles.dart';
 import 'package:provider/provider.dart';
@@ -17,7 +19,6 @@ class LoginPage extends StatelessWidget {
     final mainProvider = Provider.of<MainProvider>(context);
     final h = MediaQuery.of(context).size.height;
     final w = MediaQuery.of(context).size.height;
-
 
     Widget _loginPage() {
       return Scaffold(
@@ -82,15 +83,6 @@ class LoginPage extends StatelessWidget {
                           ),
                           Column(
                             children: <Widget>[
-                              FlatButton(
-                                  onPressed: () {},
-                                  child: Text(
-                                    '¿Olvidaste tu contraseña?',
-                                    style: TextStyle(
-                                        color: primary,
-                                        fontFamily: 'Hero',
-                                        fontSize: 16),
-                                  )),
                               MaterialButton(
                                 shape: StadiumBorder(),
                                 color: accent,
@@ -114,17 +106,36 @@ class LoginPage extends StatelessWidget {
                                                 .currentState.value['email'],
                                             password: _fbKey
                                                 .currentState.value['password'])
-                                        .then((user) {
-                                      final page = RootPage();
-                                      mainProvider.page=0;
+                                        .then((user) async {
+                                      QuerySnapshot profile = await Firestore
+                                          .instance
+                                          .collection('users')
+                                          .where("user_id", isEqualTo: user.uid)
+                                          .getDocuments();
 
-                                      //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>page));
-                                      mainProvider.currentUser = user;
-                                      print(mainProvider.currentUser);
-                                      Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => page));
+                                      if (profile.documents.length != 0) {
+                                        final page = RootPage();
+                                        mainProvider.page = 0;
+
+                                        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>page));
+                                        mainProvider.currentUser = user;
+                                        print(mainProvider.currentUser);
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => page));
+                                      } else {
+                                        final page = ProfileSet();
+                                        mainProvider.page = 0;
+
+                                        //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>page));
+                                        mainProvider.currentUser = user;
+                                        print(mainProvider.currentUser);
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => page));
+                                      }
                                     }).catchError((onError) {
                                       Alert(
                                           context: context,
@@ -133,10 +144,15 @@ class LoginPage extends StatelessWidget {
                                           buttons: [
                                             DialogButton(
                                               color: primary,
-                                              onPressed: (){
+                                              onPressed: () {
                                                 Navigator.pop(context);
                                               },
-                                              child: Text('Cancelar',style: TextStyle(color: Colors.white,fontFamily: 'Hero'),),
+                                              child: Text(
+                                                'Cancelar',
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontFamily: 'Hero'),
+                                              ),
                                             )
                                           ]).show();
                                     });
@@ -186,15 +202,30 @@ class LoginPage extends StatelessWidget {
     }
 
     return StatefulWrapper(
-      onInit: () {
-        
-        FirebaseAuth.instance.currentUser().then((user) {
+      onInit: ()  {
+        FirebaseAuth.instance.currentUser().then((user) async {
           mainProvider.currentUser = user;
-          if (mainProvider.currentUser != null) {
-            final page = RootPage();
-            mainProvider.page=0;
-            Navigator.pushReplacement(
-                context, MaterialPageRoute(builder: (context) => page));
+          if (user != null) {
+            QuerySnapshot profile = await Firestore.instance
+                .collection('users')
+                .where("user_id", isEqualTo: user.uid)
+                .getDocuments();
+
+            if (profile.documents.length != 0) {
+              if (mainProvider.currentUser != null) {
+                final page = RootPage();
+                mainProvider.page = 0;
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => page));
+              }
+            } else {
+              if (mainProvider.currentUser != null) {
+                final page = ProfileSet();
+                mainProvider.page = 0;
+                Navigator.pushReplacement(
+                    context, MaterialPageRoute(builder: (context) => page));
+              }
+            }
           }
         });
       },

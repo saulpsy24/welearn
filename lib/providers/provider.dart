@@ -142,4 +142,11 @@ class MainProvider with ChangeNotifier {
     _leccionesUnidad=_leccionesUnidad + nuevoobjeto;
     
   }
+
+  double _height=200;
+  double get getHeight =>_height;
+  set setHeight(double newh){
+    _height = newh;
+    notifyListeners();
+  }
 }

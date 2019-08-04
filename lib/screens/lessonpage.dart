@@ -131,44 +131,7 @@ class _LessonPageState extends State<LessonPage> {
           style: TextStyle(color: Colors.black, fontFamily: 'hero'),
         ),
       ),
-      bottomNavigationBar: BubbleBottomBar(
-        opacity: .1,
-        currentIndex: index,
-        onTap: (indexe) {
-          setState(() {
-            index = indexe;
-          });
-        },
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-        elevation: 8, //new
-        hasNotch: true, //new
-        hasInk: true, //new, gives a cute ink effect
-        inkColor: Colors.black12, //optional, uses theme color if not specified
-        items: <BubbleBottomBarItem>[
-          BubbleBottomBarItem(
-              backgroundColor: Colors.red,
-              icon: Icon(
-                Icons.dashboard,
-                color: Colors.black,
-              ),
-              activeIcon: Icon(
-                Icons.dashboard,
-                color: Colors.red,
-              ),
-              title: Text("Lección")),
-          BubbleBottomBarItem(
-              backgroundColor: Colors.deepPurple,
-              icon: Icon(
-                Icons.question_answer,
-                color: Colors.black,
-              ),
-              activeIcon: Icon(
-                Icons.question_answer,
-                color: Colors.deepPurple,
-              ),
-              title: Text("Preguntas")),
-        ],
-      ),
+      
       body: SafeArea(
         child: ListView(
           children: <Widget>[

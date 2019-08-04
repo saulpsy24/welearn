@@ -34,7 +34,9 @@ class HomePage extends StatelessWidget {
         if (snapshot.hasError)
           return new Text('Error: ${snapshot.error}');
         switch (snapshot.connectionState) {
-          case ConnectionState.waiting: return new Text('Loading...');
+          case ConnectionState.waiting: return new Center(
+                          child: CircularProgressIndicator(),
+                        );
           default:
             return new GridView.count(
               crossAxisCount: 2,

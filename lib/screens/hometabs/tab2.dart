@@ -13,6 +13,7 @@ class Tab2 extends StatelessWidget {
     final mainProvider = Provider.of<MainProvider>(context);
     return mainProvider.currentUser != null
         ? ListView(
+          
             children: <Widget>[
               StreamBuilder<QuerySnapshot>(
                 stream: Firestore.instance
@@ -25,7 +26,9 @@ class Tab2 extends StatelessWidget {
                     return new Text('Error: ${snapshot.error}');
                   switch (snapshot.connectionState) {
                     case ConnectionState.waiting:
-                      return new Text('Loading...');
+                      return new Center(
+                          child: CircularProgressIndicator(),
+                        );
                     default:
                       return new Column(
                         children: snapshot.data.documents
@@ -80,114 +83,6 @@ class Tab2 extends StatelessWidget {
                 child:
                     Text('Log Out', style: TextStyle(color: Colors.redAccent)),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width * .03),
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                  color: Colors.black38,
-                  width: .5,
-                ))),
-                child: Row(
-                  children: <Widget>[
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        child: Center(
-                          child: FlatButton(
-                              onPressed: () {},
-                              child: Text(
-                                'General',
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontFamily: 'hero',
-                                    fontSize: 16),
-                              )),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        child: Center(
-                          child: FlatButton(
-                              onPressed: () {},
-                              child: Text(
-                                'Cursos',
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontFamily: 'hero',
-                                    fontSize: 16),
-                              )),
-                        ),
-                      ),
-                    ),
-                    Flexible(
-                      flex: 1,
-                      child: Container(
-                        child: Center(
-                          child: FlatButton(
-                              onPressed: () {},
-                              child: Text(
-                                'Completos',
-                                style: TextStyle(
-                                    color: Colors.black87,
-                                    fontFamily: 'hero',
-                                    fontSize: 16),
-                              )),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Flex(
-                direction: Axis.horizontal,
-                children: <Widget>[
-                  Flexible(
-                    fit: FlexFit.tight,
-                    flex: 1,
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * .5,
-                      child: FlChart(
-                          chart: PieChart(
-                        PieChartData(
-                          centerSpaceRadius: 50,
-                          sections: [
-                            PieChartSectionData(
-                                value: 5,
-                                radius: 100,
-                                title: 'Tiempo',
-                                color: primary,
-                                titleStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'hero',
-                                    fontWeight: FontWeight.bold)),
-                            PieChartSectionData(
-                                value: 3,
-                                title: 'Cursos',
-                                radius: 90,
-                                color: Colors.cyan,
-                                titleStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'hero',
-                                    fontWeight: FontWeight.bold)),
-                            PieChartSectionData(
-                                value: 3,
-                                radius: 85,
-                                title: 'Actividades',
-                                titleStyle: TextStyle(
-                                    color: Colors.white,
-                                    fontFamily: 'hero',
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        ),
-                      )),
-                    ),
-                  ),
-                ],
-              )
             ],
           )
         : Center(
