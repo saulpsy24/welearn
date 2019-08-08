@@ -40,7 +40,6 @@ dependencies:
   flare_flutter: ^1.5.5
   flare_splash_screen: ^2.1.3
 
-  flutter_inapp_purchase: ^1.0.1
   
 
 
