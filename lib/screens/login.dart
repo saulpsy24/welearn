@@ -21,18 +21,18 @@ class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormBuilderState> _fbKey = GlobalKey<FormBuilderState>();
   bool isloading = true;
   FirebaseUser usergot;
- void checkLogin () async {
-   await FirebaseAuth.instance.currentUser().then((user) {
-     usergot = user;
-      
+  void checkLogin() async {
+    await FirebaseAuth.instance.currentUser().then((user) {
+      usergot = user;
     });
- }
+  }
+
   @override
   void initState() {
-     checkLogin();
-     setState(() {
-        isloading = false;
-      });
+    checkLogin();
+    setState(() {
+      isloading = false;
+    });
 
     super.initState();
   }
@@ -212,21 +212,6 @@ class _LoginPageState extends State<LoginPage> {
                         indent: 1,
                         height: 10,
                       ),
-                      Column(
-                        children: <Widget>[
-                          Text('Social Login'),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              IconButton(
-                                color: Colors.red,
-                                onPressed: () {},
-                                icon: Icon(FontAwesomeIcons.google),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
                       Padding(
                         padding: EdgeInsets.only(top: h * .05),
                         child: FlatButton(
@@ -266,10 +251,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-   
-      return _loginPage();
-    
-
-    
+    return _loginPage();
   }
 }

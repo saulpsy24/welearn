@@ -40,7 +40,6 @@ class _ProfileSetState extends State<ProfileSet> {
             if (_profile.currentState.validate()) {
               print(_profile.currentState.value);
               Map<String, dynamic> usuario = new Map<String, dynamic>();
-              usuario["age"] = _profile.currentState.value["age"];
               usuario["country"] = _profile.currentState.value["country"];
 
               usuario["name"] = _profile.currentState.value["name"];
@@ -131,23 +130,7 @@ class _ProfileSetState extends State<ProfileSet> {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: FormBuilderTextField(
-                        attribute: "age",
-                        decoration: InputDecoration(
-                            prefixStyle: TextStyle(color: primary),
-                            labelStyle: TextStyle(
-                                color: Colors.black, fontFamily: 'hero'),
-                            labelText: "Edad",
-                            prefixIcon: Icon(FontAwesomeIcons.birthdayCake)),
-                        validators: [
-                          FormBuilderValidators.maxLength(2),
-                          FormBuilderValidators.numeric(),
-                          FormBuilderValidators.required()
-                        ],
-                      ),
-                    ),
+                   
                   ],
                 ),
               )
