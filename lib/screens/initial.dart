@@ -7,6 +7,7 @@ import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/hometabs/tab1.dart';
 import 'package:welearn/screens/hometabs/tab2.dart';
 import 'package:welearn/screens/hometabs/tab3.dart';
+import 'package:welearn/screens/hometabs/tab4.dart';
 import 'package:welearn/screens/qr_scan.dart';
 import 'package:welearn/styles/styles.dart';
 
@@ -42,6 +43,8 @@ class _RootPageState extends State<RootPage> {
           {
             return Tab3();
           }
+          case 3:
+          return Tab4();
         default:
           return Container(
             child: Text('Not Found'),

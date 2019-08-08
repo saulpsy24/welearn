@@ -1,4 +1,3 @@
-import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -14,8 +13,8 @@ import 'package:welearn/styles/styles.dart';
 class LessonPage extends StatefulWidget {
   final DocumentSnapshot lesson;
   final String uid;
-  final String c_id;
-  LessonPage({this.lesson, this.c_id, this.uid});
+  final String cid;
+  LessonPage({this.lesson, this.cid, this.uid});
   @override
   _LessonPageState createState() => _LessonPageState();
 }
@@ -70,14 +69,14 @@ class _LessonPageState extends State<LessonPage> {
       Firestore.instance
           .collection('completed')
           .where("uid", isEqualTo: widget.uid)
-          .where('c_id', isEqualTo: widget.c_id)
+          .where('c_id', isEqualTo: widget.cid)
           .where('l_id', isEqualTo: widget.lesson.documentID)
           .snapshots()
           .listen((completados) {
         if (completados.documents.length == 0) {
           Map<String, dynamic> uid = new Map<String, dynamic>();
           uid["uid"] = widget.uid;
-          uid["c_id"] = widget.c_id;
+          uid["c_id"] = widget.cid;
           uid["l_id"] = widget.lesson.documentID;
 
           DocumentReference currentRegion =
@@ -158,7 +157,7 @@ class _LessonPageState extends State<LessonPage> {
                                 builder: (context) => LessonPage(
                                       lesson: mainProvider.getLessons[index],
                                       uid: widget.uid,
-                                      c_id: widget.c_id,
+                                      cid: widget.cid,
                                     )));
                         mainProvider.setLesson = mainProvider.getLessons[index];
                       },

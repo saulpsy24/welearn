@@ -1,11 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/login.dart';
-import 'package:welearn/styles/styles.dart';
 
 class Tab2 extends StatelessWidget {
   @override

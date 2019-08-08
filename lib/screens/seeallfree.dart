@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/components/recomended_card.dart';
 import 'package:welearn/providers/provider.dart';
+import 'package:welearn/screens/course_detailoficial.dart';
 
-import 'course_detail.dart';
 
 class SeeFree extends StatelessWidget {
   @override
@@ -52,7 +52,11 @@ class SeeFree extends StatelessWidget {
                           Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => CourseDetail()));
+                                  builder: (context) => CourseDetailOficial(
+                                    userId: mainProvider.currentUser.uid,
+                                    courseId: document.documentID,
+                                    sku: document.data["sku"],
+                                  )));
                         },
                         child: Container(
                           height: MediaQuery.of(context).size.height*.16,

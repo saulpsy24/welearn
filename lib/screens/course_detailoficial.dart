@@ -3,135 +3,187 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_inapp_purchase/flutter_inapp_purchase.dart';
-import 'package:provider/provider.dart';
+import 'package:in_app_purchase/in_app_purchase.dart';
 import 'package:welearn/components/incluye_card.dart';
-import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/comprado_detail.dart';
 import 'package:welearn/screens/initial.dart';
 import 'package:welearn/screens/live_class.dart';
 import 'package:welearn/styles/styles.dart';
 
-class CourseDetail extends StatefulWidget {
+class CourseDetailOficial extends StatefulWidget {
   final String courseId;
   final String userId;
   final String sku;
-  CourseDetail({this.courseId, this.userId, this.sku});
+  CourseDetailOficial({this.courseId, this.userId, this.sku});
   @override
-  _CourseDetailState createState() => _CourseDetailState();
+  _CourseDetailStateOficial createState() => _CourseDetailStateOficial();
 }
 
-class _CourseDetailState extends State<CourseDetail> {
+class _CourseDetailStateOficial extends State<CourseDetailOficial> {
   QuerySnapshot getInscripcion;
   bool inscrito = true;
 
-  List<IAPItem> _items = [];
+  /// Is the API available on the device
+  bool _available = true;
 
+  /// The In App Purchase plugin
+  InAppPurchaseConnection _iap = InAppPurchaseConnection.instance;
+
+  /// Products for sale
+  List<ProductDetails> _products = [];
+
+  /// Past purchases
+  List<PurchaseDetails> _purchases = [];
+
+  /// Updates to purchases
+  StreamSubscription _subscription;
+
+
+//Funcion para obtener las inscripciones del curso
+  void getunidades() async {
+    getInscripcion = await Firestore.instance
+        .collection('course_enroll')
+        .where("uid", isEqualTo: widget.userId)
+        .where("course_id", isEqualTo: widget.courseId)
+        .getDocuments();
+    getInscripcion.documents.length > 0
+        ? setState(() {
+            inscrito = true;
+          })
+        : setState(() {
+            inscrito = false;
+          });
+  }
+
+//Funciones a ejecutar cuando se inicia la app
   @override
   void initState() {
     print(widget.sku);
-    void getunidades() async {
-      getInscripcion = await Firestore.instance
-          .collection('course_enroll')
-          .where("uid", isEqualTo: widget.userId)
-          .where("course_id", isEqualTo: widget.courseId)
-          .getDocuments();
-      getInscripcion.documents.length > 0
-          ? setState(() {
-              inscrito = true;
-            })
-          : setState(() {
-              inscrito = false;
-            });
-    }
-
-    initPlatformState();
 
     getunidades();
+
+    _initialize();
 
     super.initState();
   }
 
-  Future<void> initPlatformState() async {
-    //prepare
-    var result = await FlutterInappPurchase.initConnection;
-    print("Result: $result");
-    if (!mounted) return;
-    //refrescar items
-    if (Platform.isAndroid) {
-      String msg = await FlutterInappPurchase.consumeAllItems;
-      print('consumeAllItems: $msg');
-    }
-    await _getProducts();
-  }
-
-  Future<Null> _getProducts() async {
-    List<IAPItem> items = await FlutterInappPurchase.getProducts([widget.sku]);
-    for (var item in items) {
-      this._items.add(item);
-    }
-    setState(() {
-      this._items = items;
-    });
-  }
-
-  Future<Null> _buyProduct(IAPItem item) async {
-    try {
-      PurchasedItem purchased =
-          await FlutterInappPurchase.buyProduct(item.productId);
-      print("Se compro consumible $purchased");
-      if (purchased != null) {
-        print('El usuario completo la compra');
-        Map<String, dynamic> uid = new Map<String, dynamic>();
-        uid["uid"] = this.widget.userId;
-        uid["course_id"] = this.widget.courseId;
-
-        DocumentReference currentRegion =
-            Firestore.instance.collection("course_enroll").document();
-
-        Firestore.instance.runTransaction((transaction) async {
-          await transaction.set(currentRegion, uid);
-        }).then((val) {
-          Navigator.pushReplacement(context ,MaterialPageRoute(builder: (context)=>RootPage()));
-        });
-      }
-      if (Platform.isAndroid) {
-        String msg = await FlutterInappPurchase.consumeAllItems;
-        print('Consume all Items: $msg');
-      }
-    } catch (error) {
-      print('el usuario cancelo $error');
+//Evitar que el estado de la app se actualice si no esta montada la app
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
     }
   }
 
-  List<Widget> _renderButton() {
-    List<Widget> widgets = this
-        ._items
-        .map((item) => RaisedButton(
-              shape: StadiumBorder(),
-              color: Colors.blue,
-              onPressed: () {
-                _buyProduct(item);
-              },
-              child: Text('Buy ${item.price} ${item.currency}'),
-            ))
-        .toList();
+  List<Widget> _renderButton(String price) {
+    if (price != "FREE") {
+      List<Widget> widgets = this
+          ._products
+          .map((item) => RaisedButton(
+                shape: StadiumBorder(),
+                color: Colors.redAccent,
+                onPressed: () {
+                  _buyProduct(item);
+                },
+                child: Text(
+                  'Comprar ${item.price} MXN',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontFamily: 'hero',
+                      fontWeight: FontWeight.bold),
+                ),
+              ))
+          .toList();
 
-    print('rended $widgets');
-    return widgets;
-    
+      print('rended $widgets');
+      return widgets;
+    } else {
+      return [];
+    }
   }
 
   @override
-  void dispose() async {
+  void dispose() {
+    _subscription.cancel();
     super.dispose();
+  }
 
-    await FlutterInappPurchase.endConnection;
+  /// Initialize data
+  void _initialize() async {
+    // Check availability of In App Purchases
+    _available = await _iap.isAvailable();
+
+    if (_available) {
+      await _getProducts();
+      await _getPastPurchases();
+    }
+    // Listen to new purchases
+    _subscription = _iap.purchaseUpdatedStream.listen((data) => setState(() {
+          print("${data.last.status}");
+          _purchases.addAll(data);
+          _verifyPurchase(data.last);
+        }));
+  }
+
+  /// Purchase a product
+  void _buyProduct(ProductDetails prod) {
+    final PurchaseParam purchaseParam = PurchaseParam(productDetails: prod);
+    // _iap.buyNonConsumable(purchaseParam: purchaseParam);
+    _iap.buyConsumable(purchaseParam: purchaseParam, autoConsume: true);
+  }
+
+  /// Get all products available for sale
+  Future<void> _getProducts() async {
+    Set<String> ids = Set.from([widget.sku, 'test_a']);
+    ProductDetailsResponse response = await _iap.queryProductDetails(ids);
+
+    setState(() {
+      _products = response.productDetails;
+    });
+  }
+
+  /// Gets past purchases
+  Future<void> _getPastPurchases() async {
+    QueryPurchaseDetailsResponse response = await _iap.queryPastPurchases();
+
+    for (PurchaseDetails purchase in response.pastPurchases) {
+      if (Platform.isIOS) {
+        InAppPurchaseConnection.instance.completePurchase(purchase);
+      }
+      print('entro aqui');
+    }
+
+    setState(() {
+      _purchases = response.pastPurchases;
+    });
+  }
+
+
+  /// Your own business logic to setup a consumable
+  void _verifyPurchase(PurchaseDetails purchase) {
+
+    if (purchase != null && purchase.status == PurchaseStatus.purchased) {
+      print('completo');
+      Map<String, dynamic> uid = new Map<String, dynamic>();
+      uid["uid"] = this.widget.userId;
+      uid["course_id"] = this.widget.courseId;
+
+      DocumentReference currentRegion =
+          Firestore.instance.collection("course_enroll").document();
+
+      Firestore.instance.runTransaction((transaction) async {
+        await transaction.set(currentRegion, uid);
+      }).then((val) {
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => RootPage()));
+      });
+    } else {
+      print('No se ha completado');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final mainProvider = Provider.of<MainProvider>(context);
     if (inscrito) {
       print(inscrito);
       return Comprado();
@@ -140,7 +192,7 @@ class _CourseDetailState extends State<CourseDetail> {
     return FutureBuilder<DocumentSnapshot>(
       future: Firestore.instance
           .collection('courses')
-          .document(mainProvider.courseId)
+          .document(widget.courseId)
           .get(),
       builder: (BuildContext context, AsyncSnapshot ds) {
         return ds.hasData
@@ -210,7 +262,6 @@ class _CourseDetailState extends State<CourseDetail> {
                         ],
                       ),
                     ),
-                    
                     Container(
                       height: MediaQuery.of(context).size.height * .7,
                       child: ListView(
@@ -301,14 +352,12 @@ class _CourseDetailState extends State<CourseDetail> {
                               ),
                             ],
                           ),
-
-                          ..._renderButton(),
-                         
+                          ..._renderButton(ds.data["price"]),
                           StreamBuilder<QuerySnapshot>(
                             stream: Firestore.instance
                                 .collection('course_units')
                                 .where("course_id",
-                                    isEqualTo: mainProvider.courseId)
+                                    isEqualTo: widget.courseId)
                                 .snapshots(),
                             builder: (BuildContext context,
                                 AsyncSnapshot<QuerySnapshot> snapshot) {

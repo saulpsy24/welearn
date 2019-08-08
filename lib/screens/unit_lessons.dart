@@ -146,7 +146,7 @@ class LessonsPage extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => LessonPage(lesson: document,uid:mainProvider.currentUser.uid,c_id:mainProvider.courseId),
+                                    builder: (context) => LessonPage(lesson: document,uid:mainProvider.currentUser.uid,cid:mainProvider.courseId),
                                   ),
                                 );
                               },

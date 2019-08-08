@@ -4,7 +4,7 @@ import 'package:welearn/components/mycourses_card.dart';
 import 'package:welearn/components/recomended_card.dart';
 import 'package:welearn/providers/provider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:welearn/screens/course_detail.dart';
+import 'package:welearn/screens/course_detailoficial.dart';
 import 'package:welearn/screens/see_all.dart';
 import 'package:welearn/screens/seeallfree.dart';
 import 'package:welearn/screens/seeallrecomended.dart';
@@ -81,6 +81,7 @@ class _Tab1State extends State<Tab1> {
             )
           ],
         ),
+        //Mis Cursos
         AnimatedContainer(
           duration: Duration(milliseconds: 500),
           height: altura,
@@ -133,11 +134,12 @@ class _Tab1State extends State<Tab1> {
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
-                                                      CourseDetail(
+                                                      CourseDetailOficial(
                                                         courseId: mainProvider
                                                             .courseId,
                                                         userId: mainProvider
                                                             .currentUser.uid,
+                                                            sku: curso.data["sku"],
                                                       )));
                                         },
                                         child: Container(
@@ -191,6 +193,7 @@ class _Tab1State extends State<Tab1> {
             )
           ],
         ),
+        //Recomendados
         StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance
               .collection('courses')
@@ -215,9 +218,10 @@ class _Tab1State extends State<Tab1> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CourseDetail(
+                                    builder: (context) => CourseDetailOficial(
                                           courseId: mainProvider.courseId,
                                           userId: mainProvider.currentUser.uid,
+                                          sku: document.data["sku"],
                                         )));
                           },
                           child: RecomendedCard(
@@ -225,6 +229,7 @@ class _Tab1State extends State<Tab1> {
                             title: document.data['name'],
                             rating: document.data['rating'],
                             price: document.data["price"],
+                            
                           ));
                     }).toList(),
                   ),
@@ -263,6 +268,7 @@ class _Tab1State extends State<Tab1> {
             )
           ],
         ),
+        //Cursos Gratis
         StreamBuilder<QuerySnapshot>(
           stream: Firestore.instance
               .collection('courses')
@@ -287,9 +293,10 @@ class _Tab1State extends State<Tab1> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CourseDetail(
+                                    builder: (context) => CourseDetailOficial(
                                           courseId: mainProvider.courseId,
                                           userId: mainProvider.currentUser.uid,
+                                          sku: document.data["sku"],
                                         )));
                           },
                           child: RecomendedCard(

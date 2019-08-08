@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/providers/provider.dart';
-import 'package:welearn/screens/homescreen.dart';
 import 'package:welearn/screens/login.dart';
 import 'package:welearn/screens/profile_details.dart';
 import 'package:welearn/styles/styles.dart';

@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/components/mycourses_card.dart';
 import 'package:welearn/providers/provider.dart';
+import 'package:welearn/screens/course_detailoficial.dart';
 
-import 'course_detail.dart';
 
 class SeeAllMC extends StatelessWidget {
   @override
@@ -71,7 +71,7 @@ class SeeAllMC extends StatelessWidget {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  CourseDetail()));
+                                                  CourseDetailOficial(sku: curso.data["sku"],)));
                                     },
                                     child: Container(
                                       child: MyCourseCard(

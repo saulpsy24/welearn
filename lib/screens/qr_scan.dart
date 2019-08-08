@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:welearn/providers/provider.dart';
-import 'package:welearn/screens/course_detail.dart';
+import 'package:welearn/screens/course_detailoficial.dart';
 
 void main() => runApp(MaterialApp(home: QRViewExample()));
 
@@ -22,7 +22,6 @@ class _QRViewExampleState extends State<QRViewExample> {
   QRViewController controller;
   @override
   Widget build(BuildContext context) {
-    var mainProvider = Provider.of<MainProvider>(context);
     return Scaffold(
       backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -70,20 +69,36 @@ class _QRViewExampleState extends State<QRViewExample> {
     this.controller = controller;
 
     var miProvider = Provider.of<MainProvider>(context);
+    var sku;
 
     controller.scannedDataStream.listen((scanData) async {
       controller.dispose();
+      await Firestore.instance
+        .collection('courses')
+        .document(scanData)
+        .get()
+        .then((DocumentSnapshot ds) {
+      // use ds as a snapshot
+      sku = ds.data["sku"];
+    }).then((document)async{
+      print(sku);
+
       await Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => CourseDetail(
+              builder: (context) => CourseDetailOficial(
                     courseId: scanData,
                     userId: miProvider.currentUser.uid,
+                    sku: sku,
                   ))).then((val) {
-        controller.dispose();
 
         miProvider.courseId = scanData;
+        controller.dispose();
+
       });
+
+    });
+
     });
   }
 }

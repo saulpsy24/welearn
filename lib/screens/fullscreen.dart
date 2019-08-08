@@ -6,9 +6,9 @@ import 'package:video_player/video_player.dart';
 import 'package:welearn/styles/styles.dart';
 
 class FullScreenVideo extends StatefulWidget {
-  VideoPlayerController videoFullscreen;
-  int minutos;
-  int segundos;
+  final VideoPlayerController videoFullscreen;
+  final int minutos;
+  final int segundos;
   FullScreenVideo({this.videoFullscreen, this.segundos, this.minutos});
   @override
   _FullScreenVideoState createState() => _FullScreenVideoState();
