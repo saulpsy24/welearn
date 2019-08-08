@@ -95,7 +95,6 @@ class _CourseDetailStateOficial extends State<CourseDetailOficial> {
               ))
           .toList();
 
-      print('rended $widgets');
       return widgets;
     } else {
       return [];

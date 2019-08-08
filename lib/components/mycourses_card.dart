@@ -140,11 +140,12 @@ class _MyCourseCardState extends State<MyCourseCard> {
                               ? mainProvider.setProgreso = (lessonsCompleted
                                           .data.documents.length *
                                       100) ~/
-                                  (numeroLecciones != 0 ? numeroLecciones : 1)
+                                  (numeroLecciones != 0 ? numeroLecciones : 100000)
                               : mainProvider.setProgreso = 0;
                           return Container(
                             width: MediaQuery.of(context).size.width * .40,
                             child: FAProgressBar(
+                              animatedDuration: Duration(milliseconds: 500),
                               progressColor: primary,
                               backgroundColor:
                                   Color.fromARGB(100, 255, 255, 255),
