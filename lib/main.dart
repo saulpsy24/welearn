@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:welearn/providers/provider.dart';
-import 'package:welearn/screens/getLogin.dart';
-import 'package:welearn/screens/login.dart';
 import 'package:welearn/screens/splash.dart';
 
 void main() {
