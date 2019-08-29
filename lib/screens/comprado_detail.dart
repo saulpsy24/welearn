@@ -175,12 +175,12 @@ class Comprado extends StatelessWidget {
                               ),
                             ],
                           ),
-                          StreamBuilder<QuerySnapshot>(
-                            stream: Firestore.instance
+                          FutureBuilder<QuerySnapshot>(
+                            future: Firestore.instance
                                 .collection('course_units')
                                 .where("course_id",
                                     isEqualTo: mainProvider.courseId)
-                                .snapshots(),
+                                .getDocuments(),
                             builder: (BuildContext context,
                                 AsyncSnapshot<QuerySnapshot> snapshot) {
                               if (snapshot.hasError)

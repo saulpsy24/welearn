@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart' as HTML;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:video_player/video_player.dart';
 import 'package:welearn/providers/provider.dart';
 import 'package:welearn/screens/fullscreen.dart';
@@ -130,207 +131,228 @@ class _LessonPageState extends State<LessonPage> {
           style: TextStyle(color: Colors.black, fontFamily: 'hero'),
         ),
       ),
-      
-      body: SafeArea(
-        child: ListView(
-          children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height * .13,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                border: Border(
-                  bottom: BorderSide(
-                    color: Colors.black38,
-                  ),
-                ),
-              ),
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: mainProvider.getLessons.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LessonPage(
-                                      lesson: mainProvider.getLessons[index],
-                                      uid: widget.uid,
-                                      cid: widget.cid,
-                                    )));
-                        mainProvider.setLesson = mainProvider.getLessons[index];
-                      },
-                      child: Column(
-                        children: <Widget>[
-                          Container(
-                            height: MediaQuery.of(context).size.height * .09,
-                            width: MediaQuery.of(context).size.height * .09,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(
-                                  MediaQuery.of(context).size.height * .06),
-                              border: Border.all(color: primary),
-                              image: DecorationImage(
-                                fit: BoxFit.cover,
-                                alignment: Alignment.centerLeft,
-                                image: NetworkImage(mainProvider
-                                    .getLessons[index].data["lesson_image"]),
+      body: SlidingUpPanel(
+        body: SafeArea(
+          child: ListView(
+            children: <Widget>[
+              Center(
+                  child: Stack(
+                children: <Widget>[
+                  Container(
+                    color: Colors.black,
+                    child: _controller.value.initialized &&
+                            _controller.value.position.inMilliseconds != 0
+                        ? AspectRatio(
+                            aspectRatio: 1.78,
+                            child: VideoPlayer(
+                              _controller,
+                            ),
+                          )
+                        : Container(
+                            child: AspectRatio(
+                              aspectRatio: 1.78,
+                              child: Center(
+                                child: CircularProgressIndicator(),
                               ),
                             ),
-                            child: Container(),
                           ),
-                          Container(
-                            width: MediaQuery.of(context).size.width * .25,
-                            child: Text(
-                              mainProvider
-                                  .getLessons[index].data["lesson_title"],
-                              style:
-                                  TextStyle(color: primary, fontFamily: 'hero'),
-                              textAlign: TextAlign.center,
-                              overflow: TextOverflow.fade,
-                              maxLines: 1,
-                              softWrap: true,
-                            ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                          Color.fromARGB(0, 0, 0, 0),
+                          Color.fromARGB(5, 0, 0, 0),
+                          Color.fromARGB(15, 0, 0, 0),
+                          Color.fromARGB(180, 0, 0, 0),
+                        ])),
+                    child: AspectRatio(
+                      aspectRatio: 1.78,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              IconButton(
+                                  onPressed: () {
+                                    setState(() {
+                                      _controller.value.isPlaying
+                                          ? _controller.pause()
+                                          : _controller.play();
+
+                                      if (_controller.value.position ==
+                                          _controller.value.duration) {
+                                        setState(() {
+                                          _controller
+                                              .seekTo(Duration(seconds: 0));
+                                          currentPos = 0;
+                                        });
+                                      }
+                                    });
+                                  },
+                                  color: Colors.white,
+                                  icon: !_controller.value.isPlaying
+                                      ? Icon(
+                                          FontAwesomeIcons.play,
+                                          size: MediaQuery.of(context)
+                                                  .devicePixelRatio *
+                                              6,
+                                        )
+                                      : miicono),
+                              Container(
+                                width: MediaQuery.of(context).size.width * .65,
+                                child: CupertinoSlider(
+                                  activeColor: primary,
+                                  onChanged: (val) {
+                                    _controller
+                                        .seekTo(Duration(seconds: val.toInt()));
+                                  },
+                                  onChangeEnd: (newval) {
+                                    _controller.seekTo(
+                                        Duration(seconds: newval.toInt()));
+                                  },
+                                  max: _controller.value.duration != null
+                                      ? _controller.value.duration.inSeconds
+                                          .toDouble()
+                                      : 100,
+                                  min: 0.0,
+                                  value: _controller.value.position != null
+                                      ? _controller.value.position.inSeconds
+                                          .toDouble()
+                                      : 0.0,
+                                ),
+                              ),
+                              Text(
+                                "$minutos:$segundos",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              IconButton(
+                                icon: Icon(Icons.fullscreen),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => FullScreenVideo(
+                                                videoFullscreen: _controller,
+                                                minutos: minutos,
+                                                segundos: segundos,
+                                              )));
+                                },
+                                color: Colors.white,
+                              )
+                            ],
                           )
                         ],
                       ),
-                    );
-                  }),
-            ),
-            Center(
-                child: Stack(
-              children: <Widget>[
-                Container(
-                  color: Colors.black,
-                  child: _controller.value.initialized &&
-                          _controller.value.position.inMilliseconds != 0
-                      ? AspectRatio(
-                          aspectRatio: 1.78,
-                          child: VideoPlayer(
-                            _controller,
-                          ),
-                        )
-                      : Container(
-                          child: AspectRatio(
-                            aspectRatio: 1.78,
-                            child: Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                          ),
-                        ),
+                    ),
+                  )
+                ],
+              )),
+              Container(
+                height: MediaQuery.of(context).size.height * .5,
+                child: ListView(
+                  children: <Widget>[
+                    webContent != null
+                        ? HTML.HtmlWidget(
+                            webContent,
+                            webView: true,
+                          )
+                        : Center(
+                            child: CircularProgressIndicator(),
+                          )
+                  ],
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [
-                        Color.fromARGB(0, 0, 0, 0),
-                        Color.fromARGB(5, 0, 0, 0),
-                        Color.fromARGB(15, 0, 0, 0),
-                        Color.fromARGB(180, 0, 0, 0),
-                      ])),
-                  child: AspectRatio(
-                    aspectRatio: 1.78,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
+              ),
+            ],
+          ),
+        ),
+        margin: EdgeInsets.only(top: 120),
+        panel: Container(
+          margin: EdgeInsets.only(top: 25),
+          child: ListView(
+            children: <Widget>[
+              for (int index = 0;
+                  index < mainProvider.getLessons.length;
+                  index++)
+                GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => LessonPage(
+                                  lesson: mainProvider.getLessons[index],
+                                  uid: widget.uid,
+                                  cid: widget.cid,
+                                )));
+                    mainProvider.setLesson = mainProvider.getLessons[index];
+                  },
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 50, vertical: 10),
+                    child: Row(
                       children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            IconButton(
-                                onPressed: () {
-                                  setState(() {
-                                    _controller.value.isPlaying
-                                        ? _controller.pause()
-                                        : _controller.play();
-
-                                    if (_controller.value.position ==
-                                        _controller.value.duration) {
-                                      setState(() {
-                                        _controller
-                                            .seekTo(Duration(seconds: 0));
-                                        currentPos = 0;
-                                      });
-                                    }
-                                  });
-                                },
-                                color: Colors.white,
-                                icon: !_controller.value.isPlaying
-                                    ? Icon(
-                                        FontAwesomeIcons.play,
-                                        size: MediaQuery.of(context)
-                                                .devicePixelRatio *
-                                            6,
-                                      )
-                                    : miicono),
-                            Container(
-                              width: MediaQuery.of(context).size.width * .65,
-                              child: CupertinoSlider(
-                                activeColor: primary,
-                                onChanged: (val) {
-                                  _controller
-                                      .seekTo(Duration(seconds: val.toInt()));
-                                },
-                                onChangeEnd: (newval) {
-                                  _controller.seekTo(
-                                      Duration(seconds: newval.toInt()));
-                                },
-                                max: _controller.value.duration != null
-                                    ? _controller.value.duration.inSeconds
-                                        .toDouble()
-                                    : 100,
-                                min: 0.0,
-                                value: _controller.value.position != null
-                                    ? _controller.value.position.inSeconds
-                                        .toDouble()
-                                    : 0.0,
-                              ),
+                        Container(
+                          height: MediaQuery.of(context).size.height * .09,
+                          width: MediaQuery.of(context).size.height * .09,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            boxShadow: [
+                              BoxShadow(color: Colors.black38),
+                              BoxShadow(color: Colors.black38)
+                            ],
+                            borderRadius: BorderRadius.circular(
+                                MediaQuery.of(context).size.height * .005),
+                            image: DecorationImage(
+                              fit: BoxFit.cover,
+                              alignment: Alignment.centerLeft,
+                              image: NetworkImage(mainProvider
+                                  .getLessons[index].data["lesson_image"]),
                             ),
-                            Text(
-                              "$minutos:$segundos",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.fullscreen),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => FullScreenVideo(
-                                              videoFullscreen: _controller,
-                                              minutos: minutos,
-                                              segundos: segundos,
-                                            )));
-                              },
-                              color: Colors.white,
-                            )
-                          ],
+                          ),
+                          child: Container(),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width * .35,
+                          child: Text(
+                            mainProvider.getLessons[index].data["lesson_title"],
+                            style:
+                                TextStyle(color: Colors.black, fontFamily: 'hero',fontWeight: FontWeight.bold,fontSize: 20),
+                            textAlign: TextAlign.center,
+                            overflow: TextOverflow.fade,
+                            maxLines: 1,
+                            softWrap: true,
+                          ),
                         )
                       ],
                     ),
                   ),
-                )
-              ],
-            )),
+                ),
+            ],
+          ),
+        ),
+        collapsed: Column(
+          children: <Widget>[
             Container(
-              height: MediaQuery.of(context).size.height * .5,
-              child: ListView(
-                children: <Widget>[
-                  webContent != null
-                      ? HTML.HtmlWidget(
-                          webContent,
-                          webView: true,
-                        )
-                      : Center(
-                          child: CircularProgressIndicator(),
-                        )
-                ],
+              margin: EdgeInsets.symmetric(vertical: 10),
+              width: 100,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Color.fromARGB(100, 0, 0, 0),
               ),
-            ),
+              height: 5,
+            )
           ],
         ),
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+        parallaxEnabled: true,
+        backdropEnabled: true,
+        minHeight: MediaQuery.of(context).size.height * .07,
+
+        maxHeight: MediaQuery.of(context).size.height * .4,
       ),
     );
   }
